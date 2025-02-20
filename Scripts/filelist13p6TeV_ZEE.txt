@@ -9,7 +9,7 @@
 #ZtoEE/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root:MC
 #SingleMu/DQM_V0001_R000316060__Global__CMSSW_X_Y_Z__RECO.root:data
 #ZtoMM/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root:MC
-"NAME OF THE STEP2 FILE FOR ZEE DATA":Data
+/eos/home-r/rforti/histograms_trackingPOG/data/ZEE/2024F_golden/DQM_V0001_R000999999__Global__CMSSW_X_Y_Z__RECO.root:Data 2024F (golden)
 /afs/cern.ch/work/p/ppalit/public/Data_MC/forgitpush/CMSSW_10_6_2/src/DQM/TrackingMonitorSource/Jobs/Run2017_EOY/ZeroBias/DQM_V0001_R000302131__Global__CMSSW_X_Y_Z__RECO.root:Data Run2 EOY
-"NAME OF THE STEP2 FILE FOR ZEE MC":MC
+/eos/home-r/rforti/histograms_trackingPOG/MC/ZEE/DYto2L-4Jets_MLL-50_TuneCP5_13p6TeV/pu_reweighted_2024F/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root:MC
 /afs/cern.ch/work/p/ppalit/public/Data_MC/forgitpush/CMSSW_10_6_2/src/DQM/TrackingMonitorSource/Jobs/Run2017_EOY/NuGun/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root:MC Run2 EOY

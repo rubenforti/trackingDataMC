@@ -137,4 +137,5 @@ DQMData/Run 999999/StandaloneTrackMonitor/Run summary/ElectronTracks/:Jet_energy
 DQMData/Run 999999/StandaloneTrackMonitor/Run summary/ElectronTracks/:Jet_chargedMultiplicity:Jet Charged Hadron Multiplicity:Events:l:lin:log
 DQMData/Run 999999/StandaloneTrackMonitor/Run summary/ElectronTracks/:nMissingExpectedInnerHits:Number of missing expected Inner Hits:Number of Tracks:l:lin:log
 DQMData/Run 999999/StandaloneTrackMonitor/Run summary/ElectronTracks/:nMissingExpectedOuterHits:Number of missing expected Outer Hits:Number of Tracks:l:lin:log
-DQMData/Run 999999/StandaloneTrackMonitor/Run summary/ElectronTracks/:ZInvMass:m_{ll}:Events:l:lin:log
+#DQMData/Run 999999/StandaloneTrackMonitor/Run summary/ElectronTracks/:ZInvMass:m_{ll}:Events:l:lin:log
+DQMData/Run 999999/ZEEDetails/Run summary/ElectronTracks/:ZInvMass:m_{ll}:Events:l:lin:log

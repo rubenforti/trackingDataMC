@@ -61,7 +61,7 @@ void compareHisto(const vector<TFile*>& v, const char* folder, const char* hname
     if (i==1) f->cd("DQMData/Run 999999/StandaloneTrackMonitor/Run summary/MuonTracks/");
     if (i==2 || i==3 || i==4) f->cd("DQMData/Run 1/StandaloneTrackMonitor/Run summary/MuonTracks/");
     //if (i==1) f->cd("DQMData/Run 1/StandaloneTrackMonitor/Run summary/MuonTracks/");
-    TH1F *h = dynamic_cast<TH1F*>(gDirectory->Get(hname));
+    TH1D *h = dynamic_cast<TH1D*>(gDirectory->Get(hname));
     if (!h) continue;
     h->SetMarkerColor(i);
     h->Draw(i ? "SAME" : "");
@@ -106,7 +106,7 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
   else if (yr == "2017") {
     datafolder = "DQMData/Run 999999/StandaloneTrackMonitor/Run summary/MuonTracks/";
     yearinfo   = "Z#rightarrow#mu#mu"; 
-    luminfo    = "17.9 fb^{-1} (13.6 TeV)"; //Modify to show the correct integrated luminosity
+    luminfo    = "13.6 TeV"; //Modify to show the correct integrated luminosity
   } 
   else if (yr == "2018") {
     datafolder = "DQMData/Run 317626/StandaloneTrackMonitor/Run summary/MuonTracks/";
@@ -176,7 +176,7 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
     //if (i==1) f->cd("DQMData/Run 999999/StandaloneTrackMonitor/Run summary/MuonTracks/"); // EOY data
     if (i==2 ) f->cd("DQMData/Run 1/StandaloneTrackMonitor/Run summary/MuonTracks/"); // UL & EOY MC
     //if (i==1) f->cd("DQMData/Run 1/StandaloneTrackMonitor/Run summary/MuonTracks/");
-    TH1F *h = dynamic_cast<TH1F*>(gDirectory->Get(hname.c_str()));
+    TH1D *h = dynamic_cast<TH1D*>(gDirectory->Get(hname.c_str()));
     if (hname == "ip3dToPV" || hname == "iperr3dToPV" ) h->Rebin(1.); // 5 
     if (hname == "nTracks") h->Rebin(10);
     if (hname == "sip3dToPV") h->Rebin(5); // 10
@@ -292,14 +292,14 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
   //f->cd(folder.c_str());
   f->cd(datafolder.c_str());
   
-  TH1F *h = dynamic_cast<TH1F*>(gDirectory->Get(hname.c_str()));
+  TH1D *h = dynamic_cast<TH1D*>(gDirectory->Get(hname.c_str()));
   assert(h);
 
   double fct = (tokens.size() > 6 && tokens[6] == "log") ? 6 : 1.25;
   h->SetMaximum(fct * hmax);
 
   //f_eoyd->cd("DQMData/Run 999999/StandaloneTrackMonitor/Run summary/MuonTracks/");  
-  //TH1F *h_eoyd = dynamic_cast<TH1F*>(gDirectory->Get(hname.c_str()));
+  //TH1D *h_eoyd = dynamic_cast<TH1D*>(gDirectory->Get(hname.c_str()));
   //assert(h_eoyd);
 
   //  fct = (tokens.size() > 6 && tokens[6] == "log") ? 6 : 1.25;
@@ -360,7 +360,7 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
     if (i==1) f->cd(datafolder.c_str()); // EOY data
     if (i==4) f->cd("DQMData/Run 1/StandaloneTrackMonitor/Run summary/MuonTracks/"); // UL & EOY MC
     //if (i==1) f->cd("DQMData/Run 1/StandaloneTrackMonitor/Run summary/MuonTracks/");
-    TH1F *h = dynamic_cast<TH1F*>(gDirectory->Get(hname.c_str()));
+    TH1D *h = dynamic_cast<TH1D*>(gDirectory->Get(hname.c_str()));
     if (hname == "ip3dToPV" || hname == "iperr3dToPV") h->Rebin(5);
     if (hname == "nTracks" ) h->Rebin(10);
     //TH1* h = gDirectory->Get(hname.c_str());
@@ -463,14 +463,14 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
   //f->cd(folder.c_str());
   f_eoyd->cd(datafolder.c_str());
   
-  //  TH1F *h = dynamic_cast<TH1F*>(gDirectory->Get(hname.c_str()));
+  //  TH1D *h = dynamic_cast<TH1D*>(gDirectory->Get(hname.c_str()));
   //assert(h);
 
   //double fct = (tokens.size() > 6 && tokens[6] == "log") ? 6 : 1.25;
   //h->SetMaximum(fct * hmax);
 
   //f_eoyd->cd("DQMData/Run 999999/StandaloneTrackMonitor/Run summary/MuonTracks/");  
-  TH1F *h_eoyd = dynamic_cast<TH1F*>(gDirectory->Get(hname.c_str()));
+  TH1D *h_eoyd = dynamic_cast<TH1D*>(gDirectory->Get(hname.c_str()));
   assert(h_eoyd);
 
   fct = (tokens.size() > 6 && tokens[6] == "log") ? 6 : 1.25;
@@ -527,7 +527,7 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
   //TRatioPlot *hratio;
   hmax = -1;
   double hmin = 999;
-  vector<TH1F*> histv;
+  vector<TH1D*> histv;
   //vector<TGraphAsymmErrors*> histv;
   char nhname[32];
   //TLegend *legend1 = new TLegend(0.55,0.99-lglist.size()*0.07,0.95,0.99);
@@ -539,12 +539,12 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
     //here i=0 will never be opened    //if (i==0) f->cd("DQMData/Run 251143/StandaloneTrackMonitor/Run summary/MuonTracks/");
     if (i==2) file->cd("DQMData/Run 1/StandaloneTrackMonitor/Run summary/MuonTracks/"); 
     //if (i==1) file->cd("DQMData/Run 1/StandaloneTrackMonitor/Run summary/MuonTracks/");
-    TH1F *h2 = dynamic_cast<TH1F*>(gDirectory->Get(hname.c_str()));
+    TH1D *h2 = dynamic_cast<TH1D*>(gDirectory->Get(hname.c_str()));
     if (!h2) continue;
 
     sprintf(nhname, "hn_%d", i);
-    TH1F* hn = new TH1F(*h2);
-    TH1F* hmc = new TH1F(*h2);
+    TH1D* hn = new TH1D(*h2);
+    TH1D* hmc = new TH1D(*h2);
     hn->SetStats(0);
     //    hmc->Sumw2();
     hmc->SetStats(0);
@@ -645,7 +645,7 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
   }
   // correct maximum height
 	std::cout<<"AAAA\n";
-  TH1F* hn = histv.at(1);
+  TH1D* hn = histv.at(1);
   
   if (hn) {
     hn->SetMaximum(1.9);
@@ -695,7 +695,7 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
 
   hmax = -1;
   hmin = 999;
-  vector<TH1F*> histv_eoy;
+  vector<TH1D*> histv_eoy;
   char nhname_eoy[32];
   //TLegend *legend1 = new TLegend(0.55,0.99-lglist.size()*0.07,0.95,0.99);
   for (uint i = 2; i < v.size(); ++i) {
@@ -705,11 +705,11 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
     //here i=0 will never be opened    //if (i==0) f->cd("DQMData/Run 251143/StandaloneTrackMonitor/Run summary/MuonTracks/");
     if (i==4) file->cd("DQMData/Run 1/StandaloneTrackMonitor/Run summary/MuonTracks/"); 
     //if (i==1) file->cd("DQMData/Run 1/StandaloneTrackMonitor/Run summary/MuonTracks/");
-    TH1F *h2 = dynamic_cast<TH1F*>(gDirectory->Get(hname.c_str()));
+    TH1D *h2 = dynamic_cast<TH1D*>(gDirectory->Get(hname.c_str()));
     if (!h2) continue;
 
     sprintf(nhname_eoy, "hn_%d", i);
-    TH1F* hn = new TH1F(*h2);
+    TH1D* hn = new TH1D(*h2);
     hn->SetStats(0);
     //if (i==2 || i==3) hn->Divide(h2, h,1,1,"B"); // UL MC & EOY MC , PU wrt UL data
     //    if (i==4) hn->Divide(h2, h_eoyd,1,1,"B"); // EOY MC,  PU wrt eoy data
@@ -777,7 +777,7 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
 
   }
   // correct maximum height
-  TH1F* hn_eoy = histv_eoy.at(0);
+  TH1D* hn_eoy = histv_eoy.at(0);
   if (hn_eoy) {
     hn_eoy->SetMaximum(1.9);
     double ermax = -1.0;
@@ -815,7 +815,7 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
   //f->cd(folder.c_str());                                                                                                                           
   f_ulm->cd("DQMData/Run 1/StandaloneTrackMonitor/Run summary/MuonTracks/");
 
-  TH1F *h_ulm = dynamic_cast<TH1F*>(gDirectory->Get(hname.c_str()));
+  TH1D *h_ulm = dynamic_cast<TH1D*>(gDirectory->Get(hname.c_str()));
   assert(h_ulm);
 
   //fct = (tokens.size() > 6 && tokens[6] == "log") ? 6 : 1.25;
@@ -830,7 +830,7 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
 
   hmax = -1;
   hmin = 999;
-  vector<TH1F*> histv3;
+  vector<TH1D*> histv3;
   //nhname[32];
   //TLegend *legend1 = new TLegend(0.55,0.99-lglist.size()*0.07,0.95,0.99);
   for (uint i = 0; i < v.size(); ++i) {
@@ -841,11 +841,11 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
     if (i==1) file->cd(datafolder.c_str());
     if (i==4) file->cd("DQMData/Run 1/StandaloneTrackMonitor/Run summary/MuonTracks/");
     //if (i==1) file->cd("DQMData/Run 1/StandaloneTrackMonitor/Run summary/MuonTracks/");
-    TH1F *h2 = dynamic_cast<TH1F*>(gDirectory->Get(hname.c_str()));
+    TH1D *h2 = dynamic_cast<TH1D*>(gDirectory->Get(hname.c_str()));
     if (!h2) continue;
 
     sprintf(nhname, "hn_%d", i);
-    TH1F* hn = new TH1F(*h2);
+    TH1D* hn = new TH1D(*h2);
     hn->SetStats(0);
     if (i==1)hn->Divide(h, h2,1,1,"B"); // data EOY/data UL
     if (i==4)hn->Divide(h_ulm, h2,1,1,"B"); // MC EOY/MC UL
@@ -902,7 +902,7 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
       legend3->SetBorderSize(0);
       }
       // correct maximum height
-      TH1F* hn3 = histv3.at(0);
+      TH1D* hn3 = histv3.at(0);
       if (hn3) {
       hn3->SetMaximum(1.9);
       double ermax = -1.0;

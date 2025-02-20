@@ -2,7 +2,7 @@
 DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:DistanceOfClosestApproachToPV:Track dxy wrt PV (cm):Number of tracks / 0.02 cm:l:lin:log
 DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:DistanceOfClosestApproachToPVZoomed:Track dxy wrt PV (cm):Number of tracks:l:lin:log
 DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:ip2dToPV:Track 2D IP wrt PV (cm):Number of tracks / 0.02 cm:l:lin:log
-DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:iperr2dToPV:Track 2D IP error wrt PV (cm):Number of tracks:l:log
+#DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:iperr2dToPV:Track 2D IP error wrt PV (cm):Number of tracks:l:log
 #DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:iperr2dToPV2validpixelhits:Track 2D IP error wrt PV (cm) (nPixelValidHits>=2):Number of tracks:l:log
 DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:ip2dToBS:Track 2D IP wrt BS (cm):Number of tracks:l:lin:log
 #DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:ip2dToBS2validpixelhits:Track 2D IP wrt BS (cm) (nPixelValidHits>=2):Number of tracks:l:lin:log
@@ -12,7 +12,7 @@ DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:sip2dToP
 #DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:sip2dToPV2validpixelhits:SIP in 2D wrt PV (nPixelValidHits>=2):Number of tracks:l:lin:log
 DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:ip3dToPV:Track 3D IP wrt PV (cm):Number of tracks:l:lin:log
 #DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:ip3dToPV2validpixelhits:Track 3D IP wrt PV (cm) (nPixelValidHits>=2):Number of tracks:l:lin:log
-DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:iperr3dToPV:Track 3D IP error wrt PV (cm):Number of tracks:l:log:log
+#DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:iperr3dToPV:Track 3D IP error wrt PV (cm):Number of tracks:l:log:log
 #DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:iperr3dToPV2validpixelhits:Track 3D IP error wrt PV (cm) (nPixelValidHits>=2):Number of tracks:l:log:log
 DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:sip3dToPV:Track 3D SIP wrt PV:Number of tracks:l:lin:log
 #DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:sip3dToPV2validpixelhits:Track 3D SIP wrt PV (nPixelValidHits>=2):Number of tracks:l:lin:log
@@ -22,7 +22,7 @@ DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:sip2dToB
 #DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:sip2dToBS2validpixelhits:SIP in 2D wrt BS (nPixelValidHits>=2):Number of tracks:l:lin:log
 DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:ip3dToBS:Track 3D IP wrt BS (cm):Number of tracks:l:lin:log
 #DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:ip3dToBS2validpixelhits:Track 3D IP wrt BS (cm) (nPixelValidHits>=2):Number of tracks:l:lin:log
-DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:iperr3dToBS:Track 3D IP error wrt BS (cm):Number of tracks:l:log:log
+#DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:iperr3dToBS:Track 3D IP error wrt BS (cm):Number of tracks:l:log:log
 #DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:iperr3dToBS2validpixelhits:Track 3D IP error wrt BS (cm) (nPixelValidHits>=2):Number of tracks:l:log:log
 DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:sip3dToBS:Track 3D SIP wrt BS:Number of tracks:l:lin:log
 #DQMData/Run 999999/StandaloneTrackMonitor/Run summary/highPurityTracks/:sip3dToBS2validpixelhits:Track 3D SIP wrt BS (nPixelValidHits>=2):Number of tracks:l:lin:log
