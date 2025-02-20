@@ -26,7 +26,7 @@ process.maxEvents = cms.untracked.PSet(
 # Input source
 process.source = cms.Source("PoolSource",
   secondaryFileNames = cms.untracked.vstring(),
-  fileNames = cms.untracked.vstring(['/store/data/Run2023D/Muon1/AOD/PromptReco-v1/000/369/927/00000/16c1eade-768e-417a-aacf-24895f4c2bd9.root'
+  fileNames = cms.untracked.vstring([
   ])
 )
 process.options = cms.untracked.PSet(
@@ -54,7 +54,7 @@ process.DQMoutput = cms.OutputModule("PoolOutputModule",
 
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '130X_dataRun3_Prompt_v3', '') #TO BE MODIFIED SO THAT IT MATCHES THE GT OF THE DATASET YOU ARE PROCESSING
+process.GlobalTag = GlobalTag(process.GlobalTag, '140X_dataRun3_Prompt_v4', '') #TO BE MODIFIED SO THAT IT MATCHES THE GT OF THE DATASET YOU ARE PROCESSING
 
 ## HLT Filter
 #import HLTrigger.HLTfilters.hltHighLevel_cfi

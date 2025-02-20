@@ -1,0 +1,21 @@
+
+BASEDIR=$PWD
+BASE_JOBS_FOLDER=~/run_condor
+JOBTYPE=ZEE_data_step2
+
+rm -rf $BASE_JOBS_FOLDER/$JOBTYPE
+
+mkdir $BASE_JOBS_FOLDER/$JOBTYPE/
+mkdir $BASE_JOBS_FOLDER/$JOBTYPE/output/
+mkdir $BASE_JOBS_FOLDER/$JOBTYPE/error/
+mkdir $BASE_JOBS_FOLDER/$JOBTYPE/log/
+
+cp step2.sh $BASE_JOBS_FOLDER/$JOBTYPE/
+cp step2.sub $BASE_JOBS_FOLDER/$JOBTYPE/
+
+
+cd $BASE_JOBS_FOLDER/$JOBTYPE
+
+condor_submit step2.sub
+
+cd $BASEDIR

@@ -52,7 +52,7 @@ process.configurationMetadata = cms.untracked.PSet(
 
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '130X_dataRun3_Prompt_v4', '') #TO BE MODIFIED SO THAT IT MATCHES THE GT OF THE DATASET YOU ARE PROCESSING
+process.GlobalTag = GlobalTag(process.GlobalTag, '140X_dataRun3_Prompt_v4', '') #TO BE MODIFIED SO THAT IT MATCHES THE GT OF THE DATASET YOU ARE PROCESSING
 
 process.DQMStore.collateHistograms = cms.untracked.bool(True)
 process.dqmSaver.saveByRun=cms.untracked.int32(-1)

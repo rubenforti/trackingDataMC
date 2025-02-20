@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -o nounset
 
-APPDIR=#PUT THE CMSSW AREA PATH 
+APPDIR=/eos/home-r/rforti/CMSSW_14_1_0_pre2/src 
 JOBDIR=$APPDIR/DQM/TrackingMonitorSource/test/trackingDataMC/Data/ZMM
 cd $APPDIR
 eval $(scramv1 runtime -sh)
