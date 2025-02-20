@@ -52,7 +52,7 @@ process.configurationMetadata = cms.untracked.PSet(
 
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '130X_mcRun3_2023_realistic_v14', '') #TO BE MODIFIED SO THAT IT MATCHES THE GT OF THE DATASET YOU ARE PROCESSING
+process.GlobalTag = GlobalTag(process.GlobalTag, '133X_mcRun3_2024_realistic_v10', '') #TO BE MODIFIED SO THAT IT MATCHES THE GT OF THE DATASET YOU ARE PROCESSING
 
 # Path and EndPath definitions
 process.edmtome_step = cms.Path(process.EDMtoME)

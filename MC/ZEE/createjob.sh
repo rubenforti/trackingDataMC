@@ -2,10 +2,10 @@
 set -o nounset
 
 infilelist="filelist.txt"
-let "nfiles = 5" #MODIFY ACCORDING TO THE NUMBER OF FILES PER JOB YOU WANT
+let "nfiles = 25" #MODIFY ACCORDING TO THE NUMBER OF FILES PER JOB YOU WANT
 
 let "ifile = 0"
-for i in $(seq 1 NUMBER) #MODIFY ACCORDING TO THE TOTAL NUMBER OF JOBS YOU WANT (IT SHOULD BE THE INTEGER PART OF (number of lines in filelist.txt)/nfiles +1)
+for i in $(seq 1 402) #MODIFY ACCORDING TO THE TOTAL NUMBER OF JOBS YOU WANT (IT SHOULD BE THE INTEGER PART OF (number of lines in filelist.txt)/nfiles +1)
 do
   flst=""
   let "n = i * nfiles"

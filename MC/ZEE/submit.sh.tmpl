@@ -1,13 +1,13 @@
 #!/bin/bash
 #set -o nounset
 
-APPDIR= #TO BE SET TO THE OUTPUT OF "echo $CMSSW_BASE" AND "/src" NEEDS TO BE ADDED
+APPDIR=/eos/home-r/rforti/CMSSW_14_1_0_pre2/src
 JOBDIR=$APPDIR/DQM/TrackingMonitorSource/test/trackingDataMC/MC/ZEE
 cd $APPDIR
 eval $(scramv1 runtime -sh)
 cd $JOBDIR
 ulimit -c 0
-export X509_USER_PROXY=/afs/cern.ch/user/d/dbruschi/private/x509up/x509up_u132335
+export X509_USER_PROXY=/afs/cern.ch/user/r/rforti/private/x509up_u157244
 voms-proxy-info -all
 cmsRun step1_cfg_INDEX.py
 exit $?

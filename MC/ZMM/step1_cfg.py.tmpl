@@ -45,7 +45,7 @@ process.configurationMetadata = cms.untracked.PSet(
 process.DQMoutput = cms.OutputModule("PoolOutputModule",
     splitLevel = cms.untracked.int32(0),
     outputCommands = process.DQMEventContent.outputCommands,
-    fileName = cms.untracked.string('"#PATH OF THE FOLDER WHERE YOU WANT TO STORE THE OUTPUT FILES"step1_DQM_INDEX.root'),
+    fileName = cms.untracked.string('/eos/home-r/rforti/histograms_trackingPOG/MC/ZMM/DYto2L-4Jets_MLL-50_TuneCP5_13p6TeV/pu_reweighted_2024F/root_files/step1_DQM_INDEX.root'),
     dataset = cms.untracked.PSet(
         filterName = cms.untracked.string(''),
         dataTier = cms.untracked.string('')
@@ -56,22 +56,22 @@ process.DQMoutput = cms.OutputModule("PoolOutputModule",
 
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '130X_mcRun3_2023_realistic_v14', '') #TO BE MODIFIED SO THAT IT MATCHES THE GT OF THE DATASET YOU ARE PROCESSING
+process.GlobalTag = GlobalTag(process.GlobalTag, '133X_mcRun3_2024_realistic_v10', '') #TO BE MODIFIED SO THAT IT MATCHES THE GT OF THE DATASET YOU ARE PROCESSING
 
 # Tracker Data MC validation suite
 process.load('DQM.TrackingMonitorSource.TrackingDataMCValidation_Standalone_cff')
-doPUCorrection = False #THIS NEED TO BE MODIFIED TO ENABLE PU REWEIGHTING (ACTUALLY WE WANT TO PROCESS THE MC TWICE, ONCE WITHOUT REWEIGHTING, SO THAT WE CAN CALCULATE THE PU WEIGHT SO THAT THE PU DISTRIBUTION MATCHES THE ONE SEEN IN DATA, AND ONCE WITH REWEIGHTING, WITH THE WEIGHTS STORED IN puScaleFactorFile)
+doPUCorrection = True #THIS NEED TO BE MODIFIED TO ENABLE PU REWEIGHTING (ACTUALLY WE WANT TO PROCESS THE MC TWICE, ONCE WITHOUT REWEIGHTING, SO THAT WE CAN CALCULATE THE PU WEIGHT SO THAT THE PU DISTRIBUTION MATCHES THE ONE SEEN IN DATA, AND ONCE WITH REWEIGHTING, WITH THE WEIGHTS STORED IN puScaleFactorFile)
 doTrackCorrection = False
-puScaleFactorFile = 'PileupScaleFactor_999999_wrt_nVertex_Run2023C.root' #TO BE MODIFIED AFTER YOU HAVE THE PU REWEIGHTING FILE
+puScaleFactorFile = '/eos/home-r/rforti/histograms_trackingPOG/MC/ZMM/DYto2L-4Jets_MLL-50_TuneCP5_13p6TeV/raw/PileupScaleFactor_999999_wrt_nVertex_Run2024F_golden.root' #TO BE MODIFIED AFTER YOU HAVE THE PU REWEIGHTING FILE
 trackScaleFactorFile = 'PileupScaleFactor_999999_wrt_nVertex_MinBias.root'
 process.standaloneTrackMonitorMC.doPUCorrection = cms.untracked.bool(doPUCorrection)
 process.standaloneTrackMonitorMC.doTrackCorrection = cms.untracked.bool(doTrackCorrection)
 process.standaloneTrackMonitorMC.puScaleFactorFile = cms.untracked.string(puScaleFactorFile)
 process.standaloneTrackMonitorMC.trackScaleFactorFile = cms.untracked.string(trackScaleFactorFile)
 process.standaloneTrackMonitorMuonMC.doPUCorrection = cms.untracked.bool(doPUCorrection)
-process.standaloneTrackMonitorMuonMC.doTrackCorrection = cms.untracked.bool(doTrackCorrection)
+#process.standaloneTrackMonitorMuonMC.doTrackCorrection = cms.untracked.bool(doTrackCorrection)
 process.standaloneTrackMonitorMuonMC.puScaleFactorFile = cms.untracked.string(puScaleFactorFile)
-process.standaloneTrackMonitorMuonMC.trackScaleFactorFile = cms.untracked.string(trackScaleFactorFile)
+#process.standaloneTrackMonitorMuonMC.trackScaleFactorFile = cms.untracked.string(trackScaleFactorFile)
 process.analysis_step = cms.Path(process.standaloneValidationMuonMC)
 
 # Path and EndPath definitions
