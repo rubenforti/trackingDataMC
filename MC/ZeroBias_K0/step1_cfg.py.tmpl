@@ -58,30 +58,28 @@ process.DQMoutput = cms.OutputModule("PoolOutputModule",
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '130X_mcRun3_2023_realistic_v14', '') #TO BE MODIFIED SO THAT IT MATCHES THE GT OF THE DATASET YOU ARE PROCESSING
 
-# Tracker Data MC validation suite
-process.load('DQM.TrackingMonitorSource.TrackingDataMCValidation_Standalone_cff')
-doPUCorrection = False #THIS NEED TO BE MODIFIED TO ENABLE PU REWEIGHTING (ACTUALLY WE WANT TO PROCESS THE MC TWICE, ONCE WITHOUT REWEIGHTING, SO THAT WE CAN CALCULATE THE PU WEIGHT SO THAT THE PU DISTRIBUTION MATCHES THE ONE SEEN IN DATA, AND ONCE WITH REWEIGHTING, WITH THE WEIGHTS STORED IN puScaleFactorFile)
+# Corrections
+doPUCorrection = False     # THIS NEED TO BE MODIFIED TO ENABLE PU REWEIGHTING (ACTUALLY WE WANT TO PROCESS THE MC TWICE, ONCE WITHOUT REWEIGHTING, SO THAT WE CAN CALCULATE THE PU WEIGHT SO THAT THE PU DISTRIBUTION MATCHES THE ONE SEEN IN DATA, AND ONCE WITH REWEIGHTING, WITH THE WEIGHTS STORED IN puScaleFactorFile)
+doNvtxCorrection = False
 doTrackCorrection = False
 puScaleFactorFile = 'PileupScaleFactor_999999_wrt_nVertex_Run2023C.root' #TO BE MODIFIED AFTER YOU HAVE THE PU REWEIGHTING FILE
+nvtxScaleFactorFile = 'PileupScaleFactor_999999_wrt_trueNInt_Run2023C.root' #TO BE MODIFIED AFTER YOU HAVE THE NVTX REWEIGHTING FILE
 trackScaleFactorFile = 'PileupScaleFactor_999999_wrt_nVertex_MinBias.root'
-#process.standaloneTrackMonitorMC.doPUCorrection = cms.untracked.bool(doPUCorrection)
-#process.standaloneTrackMonitorMC.doTrackCorrection = cms.untracked.bool(doTrackCorrection)
-#process.standaloneTrackMonitorMC.puScaleFactorFile = cms.untracked.string(puScaleFactorFile)
-#process.standaloneTrackMonitorMC.trackScaleFactorFile = cms.untracked.string(trackScaleFactorFile)
+
+# Tracker Data MC validation suite
+process.load('DQM.TrackingMonitorSource.TrackingDataMCValidation_Standalone_cff')
 process.standaloneTrackMonitorK0MC.doPUCorrection = cms.untracked.bool(doPUCorrection)
+process.standaloneTrackMonitorK0MC.doNvtxCorrection = cms.untracked.bool(doNvtxCorrection)
 process.standaloneTrackMonitorK0MC.doTrackCorrection = cms.untracked.bool(doTrackCorrection)
 process.standaloneTrackMonitorK0MC.puScaleFactorFile = cms.untracked.string(puScaleFactorFile)
+process.standaloneTrackMonitorK0MC.nvtxScaleFactorFile = cms.untracked.string(nvtxScaleFactorFile)
 process.standaloneTrackMonitorK0MC.trackScaleFactorFile = cms.untracked.string(trackScaleFactorFile)
-#process.standaloneTrackMonitorMCFPixHole.doPUCorrection = cms.untracked.bool(doPUCorrection)
-#process.standaloneTrackMonitorMCFPixHole.doTrackCorrection = cms.untracked.bool(doTrackCorrection)
-#process.standaloneTrackMonitorMCFPixHole.puScaleFactorFile = cms.untracked.string(puScaleFactorFile)
-#process.standaloneTrackMonitorMCFPixHole.trackScaleFactorFile = cms.untracked.string(trackScaleFactorFile)
 process.standaloneTrackMonitorK0MCFPixHole.doPUCorrection = cms.untracked.bool(doPUCorrection)
+process.standaloneTrackMonitorK0MCFPixHole.doNvtxCorrection = cms.untracked.bool(doNvtxCorrection)
 process.standaloneTrackMonitorK0MCFPixHole.doTrackCorrection = cms.untracked.bool(doTrackCorrection)
 process.standaloneTrackMonitorK0MCFPixHole.puScaleFactorFile = cms.untracked.string(puScaleFactorFile)
+process.standaloneTrackMonitorK0MCFPixHole.nvtxScaleFactorFile = cms.untracked.string(nvtxScaleFactorFile)
 process.standaloneTrackMonitorK0MCFPixHole.trackScaleFactorFile = cms.untracked.string(trackScaleFactorFile)
-
-
 process.analysis_step = cms.Path(process.standaloneValidationK0sMC)
 
 # Path and EndPath definitions
