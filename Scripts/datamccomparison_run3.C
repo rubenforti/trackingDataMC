@@ -24,10 +24,12 @@ void tokenize(const string& str, vector<string>& tokens, const string& delimiter
 void openFiles(vector<TFile*>& v, vector<string>& l, string& f, const string& analysis);
 void closeFiles(vector<TFile*>& v);
 void readHistograms(vector<string>& v, const string& hists_fname);
-void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>& lglist, const vector<string>& tokens, const bool& profiles, const string& analysis, const string& yr, const bool& cmpData, const string& outfolder, const string& folder_postfix); 
+void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>& lglist, const vector<string>& tokens, 
+                  const string& analysis_folder, const string& analysis_info, const bool& cmpData, const bool& profiles, 
+                  const string& yearinfo, const string& luminfo, const string& outfolderr_postfix); 
 void textonplot(double x1, double y1, double x2, double y2, double txtfont, double txtsize, TString s);
 void rmdot(double x1, double y1, double x2, double y2, double txtfont, TString s);
-void parseEtaCut(const string& input);
+void parseEtaCut(const string& input, string& out_cut);
 
 void datamccomparison_run3(string analysis, string year="",
                            bool cmpData=false, bool doProfile=false, string folder_postfix="",
@@ -55,19 +57,19 @@ void datamccomparison_run3(string analysis, string year="",
         comparison_hfname = "highpurityHistolist_run3.txt";
         profile_hfname = "highpurityProfile_run3.txt";
         scatter_hfname = "highpurityScatter_run3.txt";
-        analysis_folder = "highPurityTracks/"+folder_postfix;
-        anaysis_info = "ZeroBias";
+        analysis_folder = "highPurityTracks"+folder_postfix;
+        analysis_info = "ZeroBias";
     }
     else if (analysis == "ZEE") {
         comparison_hfname = "ElectronHistolist_run3.txt";
         profile_hfname = "ElectronProfile_run3.txt";
-        analysis_folder = "ElectronTracks/"+folder_postfix;
+        analysis_folder = "ElectronTracks"+folder_postfix;
         analysis_info = "Z#rightarrowee";
     }
     else if (analysis == "ZMM") {
         comparison_hfname = "MuonHistolist_run3.txt";
         profile_hfname = "MuonProfile_run3.txt";
-        analysis_folder = "MuonTracks/"+folder_postfix;
+        analysis_folder = "MuonTracks"+folder_postfix;
         analysis_info = "Z#rightarrow#mu#mu";
     }
     else if (analysis == "ZeroBias_K0") {
@@ -155,7 +157,7 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
     string mcfolder   = "DQMData/Run 1/StandaloneTrackMonitor/Run summary/" + analysis_folder;
     string hname(tokens[1]);
     
-    if (analysis_info=="ZEE" && hname=="ZInvMass") {
+    if (analysis_info=="Z#rightarrowee" && hname=="ZInvMass") {
         datafolder = "DQMData/Run 999999/ZEEDetails/Run summary/ElectronTracks/";
 	    mcfolder = "DQMData/Run 1/ZEEDetails/Run summary/ElectronTracks/";
     }
@@ -175,16 +177,7 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
     pad11->Draw();
     pad11->cd();
 
-    TLegend *legend11;
-    if (yr=="2016pre") {
-        legend11 = new TLegend(0.40, 0.66, 0.70, 0.78);
-    }
-    else if (yr=="2016post") {
-        legend11 = new TLegend(0.40, 0.66, 0.70, 0.78);
-    }
-    else {
-        legend11 = new TLegend(0.63, 0.73, 0.92, 0.85);
-    }
+    TLegend *legend11 = new TLegend(0.63, 0.73, 0.92, 0.85);
 
     double hmax = -1;
     double nentriesdata = 0;
@@ -235,7 +228,7 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
             h->GetXaxis()->SetRangeUser(0., 5.0);;
         }
         if (hname=="DistanceOfClosestApproachToPVZoomed") {
-            if (!(analysis=="ZeroBias")) h->Rebin(10);
+            if (!(analysis_info=="ZeroBias")) h->Rebin(10);
             h->GetXaxis()->SetRangeUser(-0.02, 0.02);
 	}
 
@@ -342,14 +335,17 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
     double fct = tokens.size()>6 && tokens[6]=="log" ? 6 : 1.25;  // doesn't work on profiles, in these cases maximum is set above
     h->SetMaximum(fct * hmax);
     
-    if (!yearinfo.empty()) analysis_info = analysis_info + " - " + yearinfo;
 
     // Add eta cut info, if any. Assumes folder_postfix starts with "Eta".
     string cut="";
-    parseEtaCut(folder_postfix, out_cut);
 
-    textonplot(0.16, 0.83, 0.28, 0.85, 42, 0.058, analysis_info);
-    textonplot(0.53, 0.83, 0.28, 0.85, 42, 0.04, out_cut);
+    // parse eta cut from the last component
+    parseEtaCut(analysis_folder, cut);
+
+    cout << "CUT: " << cut.c_str() << endl;
+
+    textonplot(0.16, 0.83, 0.28, 0.85, 42, 0.058, (!yearinfo.empty()) ? analysis_info+" - "+yearinfo : analysis_info);
+    textonplot(0.53, 0.83, 0.28, 0.85, 42, 0.04, cut);
     textonplot(0.55, 0.875, 0.84, 1.0, 42, 0.058, luminfo);
     textonplot(0.10, 0.875, 0.18, 1.0, 62, 0.058, "CMS");
     textonplot(0.24, 0.860, 0.34, 1.0, 52, 0.058, "  Preliminary");
@@ -609,16 +605,19 @@ void tokenize(const string& str, vector<string>& tokens, const string& delimiter
   }
 }    
 
-string parseEtaCut(const string& input, string& out_cut) {
+void parseEtaCut(const string& input, string& out_cut) {
+    
+    size_t pos = input.rfind("Eta");
+    string cutVal = (pos != string::npos) ? input.substr(pos) : input;
     smatch match;
 
-    if (regex_match(input, match, regex(R"(EtaOver([0-9p]+))"))) {
+    if (regex_match(cutVal, match, regex(R"(EtaOver([0-9p]+))"))) {
         string val = match[1];
         replace(val.begin(), val.end(), 'p', '.');
         out_cut = "|#eta| > " + val;
     }
 
-    if (regex_match(input, match, regex(R"(Eta([0-9p]+)to([0-9p]+))"))) {
+    if (regex_match(cutVal, match, regex(R"(Eta([0-9p]+)to([0-9p]+))"))) {
         string val1 = match[1];
         string val2 = match[2];
         replace(val1.begin(), val1.end(), 'p', '.');
@@ -626,7 +625,7 @@ string parseEtaCut(const string& input, string& out_cut) {
         out_cut = val1 + " < |#eta| < " + val2;
     }
 
-    if (regex_match(input, match, regex(R"(EtaUnder([0-9p]+))"))) {
+    if (regex_match(cutVal, match, regex(R"(EtaUnder([0-9p]+))"))) {
         string val = match[1];
         replace(val.begin(), val.end(), 'p', '.');
         out_cut = "|#eta| < " + val;
