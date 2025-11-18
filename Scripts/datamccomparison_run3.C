@@ -316,10 +316,6 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
         legend11->SetFillStyle(0);
     }
 
-    std::cout << hname.c_str() << std::endl;
-    std::cout << tokens[2] << " " << tokens[3] << " " << tokens[4] << std::endl;
-    std::cout << ((tokens.size()>5) ? tokens[5] : "-") << " " << ((tokens.size()>6) ? tokens[6] : "-") << std::endl;    
-
     TFile* f = v.at(0);
     f->cd(datafolder.c_str());
     
@@ -334,15 +330,10 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
     
     double fct = tokens.size()>6 && tokens[6]=="log" ? 6 : 1.25;  // doesn't work on profiles, in these cases maximum is set above
     h->SetMaximum(fct * hmax);
-    
 
     // Add eta cut info, if any. Assumes folder_postfix starts with "Eta".
     string cut="";
-
-    // parse eta cut from the last component
     parseEtaCut(analysis_folder, cut);
-
-    cout << "CUT: " << cut.c_str() << endl;
 
     textonplot(0.16, 0.83, 0.28, 0.85, 42, 0.058, (!yearinfo.empty()) ? analysis_info+" - "+yearinfo : analysis_info);
     textonplot(0.53, 0.83, 0.28, 0.85, 42, 0.04, cut);
@@ -357,7 +348,7 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
     pad11->Update();
     pad11->Modified();
     
-    std::cout << "pad11 drawn successfully" << std::endl; 
+    std::cout << "Main pad drawn successfully" << std::endl; 
 
     // Ratio plot pad
     canvas->cd();
@@ -398,7 +389,6 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
     double hmin = 999;
     vector<TH1*> histv;
     bool draw_hline = true; 
-    cout << v.size() << endl;
 
     // DRAWING RATIO
     for (uint i=1; i<v.size(); ++i) {
@@ -449,8 +439,6 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
         hn->Sumw2();
         histv.push_back(hn);
         
-        cout << "Integrals before ratio: " << h->Integral() << "  " << h2->Integral() << endl;
-
         if (hn->GetMaximum() > hmax) hmax = hn->GetMaximum();
         if (hn->GetMinimum() < hmin) hmin = hn->GetMinimum();
 
