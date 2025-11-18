@@ -183,12 +183,15 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
     double nentriesdata = 0;
     string folder_compare = (!cmpData) ? mcfolder : datafolder;
 
+    vector<TH1*> hists;
+
     // DRAWING PLOTS
     for (uint i=0; i<v.size(); ++i) {
 
         if (!(i==0 || i==1 || i==2)) continue;
+        
         TFile* f = v[i];
-        if (i==0) f->cd(datafolder.c_str()); // UL data
+        if (i==0) f->cd(datafolder.c_str());
         else f->cd(folder_compare.c_str());
         
         TH1 *h = nullptr;
@@ -198,9 +201,9 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
             TProfile *h_profile = dynamic_cast<TProfile*>(gDirectory->Get(hname.c_str()));            
             if (h_profile) h = h_profile->ProjectionX((hname+"_px_"+to_string(i)).c_str(), "e");
         }
-        if (!h) continue;
-
-        h->Sumw2();  
+        assert(h);
+        h->Sumw2();
+        hists.push_back(h);
 
         // specific options (customize if needed)
         if (hname == "ip3dToPV") {
@@ -230,19 +233,16 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
         if (hname=="DistanceOfClosestApproachToPVZoomed") {
             if (!(analysis_info=="ZeroBias")) h->Rebin(10);
             h->GetXaxis()->SetRangeUser(-0.02, 0.02);
-	}
-
+	    }
         
         if (i==0) nentriesdata = h->Integral("width");
-        //else if (!cmpData) h->Scale(nentriesdata/h->Iintegral("width"));
         else if (!profiles) h->Scale(nentriesdata/h->Integral("width"));
         
         if (h->GetMaximum() > hmax) hmax = h->GetMaximum();
 
         h->SetTitle("");
-        string option=("E");
-        if (i==0) {
-            //h->SetTitle(h_title);
+        string option="E";
+        if (i==0) {  // Data
             h->SetTitleSize(0.040);
             h->SetTitleOffset(0.105);
             if (tokens.size()>3) h->GetYaxis()->SetTitle(tokens[3].c_str());
@@ -252,10 +252,6 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
             h->GetYaxis()->SetTitleSize(0.05);
             h->GetXaxis()->SetTitleOffset(0.77);
             h->GetYaxis()->SetTitleOffset(0.99);
-            if (profiles) {
-                h->SetMinimum(0.0);
-                h->SetMaximum(1.5*h->GetMaximum());
-            }            
 
             h->SetMarkerSize(2.0);
             h->SetMarkerStyle(20);
@@ -303,33 +299,25 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
             hstats->Draw();
             h->GetListOfFunctions()->Add(hstats);
             hstats->SetParent(h);
-
         }
-
         TGaxis::SetExponentOffset(-0.07, 0, "y");
         h->GetYaxis()->SetLabelSize(0.045);
         h->GetXaxis()->SetLabelSize(0.045);
         h->Draw(option.c_str());
-        legend11->AddEntry(h, lglist[i].c_str(), ((i==1 || i==2) ? "L" : "PL"));
+        legend11->AddEntry(h, lglist[i].c_str(), ((i==0) ? "PL" : "L"));
         legend11->SetTextSize(0.035);
         legend11->SetBorderSize(0);
         legend11->SetFillStyle(0);
     }
 
-    TFile* f = v.at(0);
-    f->cd(datafolder.c_str());
-    
-    TH1 *h = nullptr;
-    if (!profiles) { 
-        h = dynamic_cast<TH1*>(gDirectory->Get(hname.c_str()));
+    TH1* h = hists.at(0);
+    if (!profiles) {
+        double fct = (tokens.size()>6 && tokens[6]=="log") ? 6 : 1.25;
+        h->SetMaximum(fct * hmax);
     } else {
-        TProfile *h_profile = dynamic_cast<TProfile*>(gDirectory->Get(hname.c_str()));
-        h = h_profile->ProjectionX((hname+"_px_fct").c_str(), "e");
-    }    
-    assert(h);
-    
-    double fct = tokens.size()>6 && tokens[6]=="log" ? 6 : 1.25;  // doesn't work on profiles, in these cases maximum is set above
-    h->SetMaximum(fct * hmax);
+        h->SetMinimum(min(0.0, 1.5*h->GetMinimum()));
+        h->SetMaximum(1.5*hmax);
+    }
 
     // Add eta cut info, if any. Assumes folder_postfix starts with "Eta".
     string cut="";
@@ -387,31 +375,18 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
 
     hmax = -1;
     double hmin = 999;
-    vector<TH1*> histv;
-    bool draw_hline = true; 
 
     // DRAWING RATIO
     for (uint i=1; i<v.size(); ++i) {
         if (!(i==1 || i==2)) continue;
-	    TFile* file = v[i];
-        file->cd(folder_compare.c_str()); 
         
-        TH1 *h2 = nullptr;
-        if (!profiles) {
-            h2 = dynamic_cast<TH1*>(gDirectory->Get(hname.c_str()));
-        } else {
-            TProfile *h2_profile = dynamic_cast<TProfile*>(gDirectory->Get(hname.c_str()));
-            if (h2_profile) h2 = h2_profile->ProjectionX((hname+"_px").c_str(), "e");
-        }
-        if (!h2) continue;
+        TH1 *h2 = hists.at(i);
 
-        if (draw_hline) {
-            // draw a black line at y=1 before every other histogram
+        if (i==1) {  // draw a black line at y=1 before every other histogram
             TH1* hmc = (TH1*)h2->Clone();
             hmc->SetStats(0);
             hmc->Divide(h2, h2, 1, 1, "B");
-            hmc->Sumw2();
-            histv.push_back(hmc);
+            
             hmc->SetMarkerSize(2.0);
             hmc->SetMarkerStyle(22);
             hmc->SetMarkerColor(1);
@@ -421,34 +396,31 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
             hmc->SetTitle("");
             hmc->GetXaxis()->SetTitle(tokens[2].c_str());
             hmc->GetYaxis()->SetTitle((!cmpData) ? "Data/MC" : "Data1/Data2");
-            hmc->GetXaxis()->SetLabelSize(0.12);
-            hmc->GetYaxis()->SetLabelSize(0.12);
-            hmc->GetXaxis()->SetTitleSize(0.11);
-            hmc->GetYaxis()->SetTitleSize(0.13);
+            hmc->SetMaximum(1.6);
+            hmc->SetMinimum(0.4);
+            hmc->GetXaxis()->SetLabelSize(0.1);
+            hmc->GetYaxis()->SetLabelSize(0.1);
+            hmc->GetXaxis()->SetTitleSize(0.12);
+            hmc->GetYaxis()->SetTitleSize(0.12);
             hmc->GetYaxis()->SetTitleOffset(0.41);
             hmc->GetXaxis()->SetTitleOffset(1.15);
             hmc->GetXaxis()->SetLabelOffset(0.03);
+            hmc->GetXaxis()->SetTickSize(0.08);
+            hmc->GetYaxis()->SetNdivisions(208);
             hmc->Draw("E");
-	        
-            draw_hline = false;
         }
 
         TH1* hn = (TH1*)h2->Clone();
         hn->SetStats(0);
         hn->Divide(h, h2, 1, 1, "B");
-        hn->Sumw2();
-        histv.push_back(hn);
-        
-        if (hn->GetMaximum() > hmax) hmax = hn->GetMaximum();
-        if (hn->GetMinimum() < hmin) hmin = hn->GetMinimum();
+        hists_ratio.push_back(hn);
 
         if (i==1) {
             hn->SetMarkerSize(2.0);
             hn->SetMarkerStyle(20);
             hn->SetMarkerColor(2);
             hn->SetLineWidth(3);
-        }
-        else {
+        } else {
             hn->SetMarkerSize(1.0);
             hn->SetMarkerStyle(1);
             hn->SetLineStyle(1);
@@ -457,20 +429,8 @@ void compareHisto(TCanvas* canvas, const vector<TFile*>& v, const vector<string>
 
         string option = (i==1) ? "ESAME" : "HISTSAMES";
         hn->Draw(option.c_str());
-    
     }
-    // correct maximum height
-
-    TH1* hmc = histv.at(0);
-    hmc->SetMaximum(1.6);
-    hmc->SetMinimum(0.4);
-    hmc->GetXaxis()->SetLabelSize(0.1);
-    hmc->GetYaxis()->SetLabelSize(0.1);
-    hmc->GetXaxis()->SetTitleSize(0.12);
-    hmc->GetYaxis()->SetTitleSize(0.12);
-    hmc->GetXaxis()->SetTickSize(0.08);
-    hmc->GetYaxis()->SetNdivisions(208);
-        
+   
     if (tokens.size()>5 && tokens[5]=="log") pad21->SetLogx();
     pad21->Update();
     pad21->Modified();
