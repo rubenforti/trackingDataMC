@@ -1,0 +1,53 @@
+#ifndef comparisons_utils_run3_h
+#define comparisons_utils_run3_h
+
+#include "TFile.h"
+#include "TH1.h"
+#include "TProfile.h"
+#include "TCanvas.h"
+#include "TLegend.h"
+#include "TMath.h"
+#include "TStyle.h"
+#include "TLine.h"
+#include "TLatex.h"
+#include "TGaxis.h"
+#include "TPaveStats.h"
+#include "CMS_lumi.h"
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <cassert>
+#include <regex>
+
+using namespace std;
+typedef unsigned int uint;
+
+void tokenize(const string& str, vector<string>& tokens, const string& delimiters=" ");
+
+void openFiles(vector<TFile*>& v, vector<string>& l, string& f, const string& analysis);
+
+vector<pair<TFile*, string>> openFiles(string& filename, const string& analysis);
+
+void closeFiles(vector<TFile*>& v);
+
+void closeFiles(vector<pair<TFile*, string>>& v);
+
+void readHistograms(vector<string>& v, const string& hists_fname);
+
+void textonplot(double x1, double y1, double x2, double y2, double txtfont, double txtsize, TString s);
+
+void rmdot(double x1, double y1, double x2, double y2, double txtfont, TString s);
+
+void parseEtaCut(const string& input, string& out_cut);
+
+void compareHisto(TCanvas* canvas, 
+                  const vector<pair<TFile*, string>>& data_list, 
+                  const string& analysis_folder,
+                  const bool& cmpData, 
+                  const bool& profiles,
+                  const vector<string>& hist_tokens,
+                  const vector<string>& print_info, 
+                  const string& outfolder); 
+
+
+#endif
