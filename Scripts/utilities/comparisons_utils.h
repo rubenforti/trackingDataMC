@@ -40,6 +40,16 @@ void rmdot(double x1, double y1, double x2, double y2, double txtfont, TString s
 
 void parseEtaCut(const string& input, string& out_cut);
 
+pair<bool, int> getStyleInfo(const int& cmpType, const int& index, const bool& isRatio);
+
+void setRatioPad(TH1* h, const string& xName, const string& yName);
+
+void plotHisto(TH1* h, 
+               const string& yName, 
+               const bool& isPrimaryHist, 
+               const bool& isBullet, 
+               const int& colorNum);
+
 void compareHisto(TCanvas* canvas, 
                   const vector<pair<TFile*, string>>& data_list, 
                   const string& analysis_folder,

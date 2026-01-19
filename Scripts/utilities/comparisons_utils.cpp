@@ -173,6 +173,131 @@ void parseEtaCut(const string& input, string& out_cut) {
 
 }
 
+
+pair<bool, int> getStyleInfo(const int& cmpType, const int& index, const bool& isRatio=false) {
+    
+    bool isBullet=true;
+    int colorNum=1;
+
+    if (cmpType == 0 || cmpType == 1) { // Data-vs-MC or Data1-vs-Data2
+        if (index == 0) {
+            isBullet = true; // Data
+            colorNum = (!isRatio) ? 1 : 2;
+        } else {
+            isBullet = false; // MC nominal
+            colorNum = 2;
+        }
+    } else if (cmpType == 2) { // Data-vs-MC1-vs-MC2
+        if (index == 0) {
+            isBullet = true; // Data
+            colorNum = (!isRatio) ? 1 : 2;
+        } else if (index == 1) {
+            isBullet = false; // MC nominal
+            colorNum = 2;
+        } else {
+            isBullet = false; // MC alternative
+            colorNum = 806;
+        }
+    } else if (cmpType == 3) { // Data1-vs-Data2-vs-MC
+        if (index == 0) {
+            isBullet = true; // Data1
+            colorNum = 2;
+        } else if (index == 1) {
+            isBullet = true; // Data2
+            colorNum = 4;
+        } else {
+            isBullet = false; // MC nominal
+            colorNum = 1;
+        }
+    } else if (cmpType == 4) { // Data1 vs Data2 vs MC1 vs MC2
+        if (index == 0) {
+            isBullet = true; // Data1
+            colorNum = (!isRatio) ? 1 : 2;
+        } else if (index == 1) {
+            isBullet = true; // Data2
+            colorNum = 4;
+        } else if (index == 2) {
+            isBullet = false; // MC nominal
+            colorNum = 2;
+        } else {
+            isBullet = false; // MC alternative
+            colorNum = 806;
+        }
+    }
+    return make_pair(isBullet, colorNum);
+}
+
+void setRatioPad(TH1* h, const string& xName, const string& yName) {
+    h->SetTitle("");
+    h->SetStats(0);
+    
+    TH1* hline = (TH1*)h->Clone();
+    hline->SetStats(0);
+    hline->Divide(h, h, 1, 1, "B");
+
+    hline->GetXaxis()->SetTitle(xName.c_str());
+    hline->GetYaxis()->SetTitle(yName.c_str());
+    hline->SetMaximum(1.6);
+    hline->SetMinimum(0.4);
+    hline->GetXaxis()->SetLabelSize(0.1);
+    hline->GetYaxis()->SetLabelSize(0.1);
+    hline->GetXaxis()->SetTitleSize(0.12);
+    hline->GetYaxis()->SetTitleSize(0.12);
+    hline->GetYaxis()->SetTitleOffset(0.41);
+    hline->GetXaxis()->SetTitleOffset(1.15);
+    hline->GetXaxis()->SetLabelOffset(0.03);
+    hline->GetXaxis()->SetTickSize(0.08);
+    hline->GetYaxis()->SetNdivisions(208);
+    hline->SetLineWidth(3);
+    hline->SetLineStyle(1);
+    hline->SetLineColor(1);
+    hline->Draw("E");
+}
+
+void plotHisto(TH1* h, 
+               const string& yName, 
+               const bool& isPrimaryHist, 
+               const bool& isBullet, 
+               const int& colorNum) 
+{
+    h->SetTitle("");
+
+    if (isPrimaryHist) {
+        h->SetTitleSize(0.040);
+        h->SetTitleOffset(0.105);
+        h->GetYaxis()->SetTitle(yName.c_str());
+        h->GetXaxis()->SetLabelSize(0.045);
+        h->GetYaxis()->SetLabelSize(0.045);
+        h->GetXaxis()->SetTitleSize(0.05);
+        h->GetYaxis()->SetTitleSize(0.05);
+        h->GetXaxis()->SetTitleOffset(0.77);
+        h->GetYaxis()->SetTitleOffset(0.99);
+    } else {
+        gPad->RedrawAxis();
+    }
+
+    h->SetMarkerSize(2.0);
+    h->SetMarkerStyle(20);
+    h->SetMarkerColor(colorNum);
+    h->SetLineColor(colorNum);
+    h->SetLineWidth(3);
+    h->SetLineStyle(colorNum!=806 ? 1 : 9); // dashed for alternative MC
+
+    TPaveStats *hstats = new TPaveStats(0.99, 0.99, 0.99, 0.99, "brNDC");
+    hstats->SetTextColor(1);
+    hstats->SetOptStat(1111);
+    hstats->Draw();
+    h->GetListOfFunctions()->Add(hstats);
+    hstats->SetParent(h);
+
+    string option = isPrimaryHist ? "E" : (isBullet ? "SAMES" : "HISTSAMES");
+
+    TGaxis::SetExponentOffset(-0.07, 0, "y");
+    h->GetYaxis()->SetLabelSize(0.045);
+    h->GetXaxis()->SetLabelSize(0.045);
+    h->Draw(option.c_str());
+}
+
 void compareHisto(TCanvas* canvas, 
                   const vector<pair<TFile*, string>>& data_list, 
                   const string& analysis_folder,
@@ -182,7 +307,7 @@ void compareHisto(TCanvas* canvas,
                   const vector<string>& print_info, 
                   const string& outfolder)
 {
-    std::cout<<"Compare Histo Start"<<std::endl;
+    cout << "Compare Histo Start" << endl;
     
     string datafolder = "DQMData/Run 999999/StandaloneTrackMonitor/Run summary/" + analysis_folder;
     string mcfolder   = "DQMData/Run 1/StandaloneTrackMonitor/Run summary/" + analysis_folder;
@@ -194,7 +319,6 @@ void compareHisto(TCanvas* canvas,
     }
     
     canvas->cd();
-
 
     TString h_title = hist_tokens[1];
     gStyle->SetLineWidth(3);
@@ -213,22 +337,29 @@ void compareHisto(TCanvas* canvas,
 
     double hmax = -1;
     double nentriesdata = 0;
-    string folder_compare = (!cmpData) ? mcfolder : datafolder;
 
     vector<TH1*> hists;
 
-    std::cout<< "Tokens read: "<< hist_tokens.size() << std::endl;
-    std::cout<< "Data list size: "<< data_list.size() << std::endl;
+    cout << "Tokens read: " << hist_tokens.size() << endl;
+    cout << "Data list size: " << data_list.size() << endl;
 
+    int cmpType;
+    if      (data_list.size()==2 && !cmpData) cmpType = 0; // Data vs MC
+    else if (data_list.size()==2 && cmpData)  cmpType = 1; // Data1 vs Data2
+    else if (data_list.size()==3 && !cmpData) cmpType = 2; // Data vs MC1 vs MC2
+    else if (data_list.size()==3 && cmpData)  cmpType = 3; // Data1 vs Data2 vs MC
+    else if (data_list.size()==4 && cmpData)  cmpType = 4; // Data1 vs Data2 vs MC1 vs MC2
+    else {
+        cerr << "Invalid number of files for comparison: " << data_list.size() << endl;
+        return;
+    }
 
     // DRAWING PLOTS
     for (uint i=0; i<data_list.size(); ++i) {
-
-        if (!(i==0 || i==1 || i==2)) continue;
         
         TFile* f = data_list[i].first;
-        if (i==0) f->cd(datafolder.c_str());
-        else f->cd(folder_compare.c_str());
+        if (i==0 || (i==1 && cmpData)) f->cd(datafolder.c_str());
+        else f->cd(mcfolder.c_str());
         
         TH1 *h = nullptr;
         if (!profiles) {
@@ -256,75 +387,23 @@ void compareHisto(TCanvas* canvas,
         int nbinsx = h->GetNbinsX();
         
         if (i==0) nentriesdata = h->Integral("width");
-        else if (!profiles) h->Scale(nentriesdata/h->Integral("width"));
+        else if (!profiles) {
+            double norm = 1.0;
+            if (i>0 && (cmpType<=2)) { 
+                norm = nentriesdata / h->Integral("width"); 
+            }
+            else if (cmpType>=3) {
+                norm = 1.0 / h->Integral("width");
+            }
+            h->Scale(norm);
+        }
         
         if (h->GetMaximum() > hmax) hmax = h->GetMaximum();
 
-        h->SetTitle("");
-        string option="E";
-        if (i==0) {  // Data
-            h->SetTitleSize(0.040);
-            h->SetTitleOffset(0.105);
-            h->GetYaxis()->SetTitle(hist_tokens[2].c_str());
-            h->GetXaxis()->SetLabelSize(0.045);
-            h->GetYaxis()->SetLabelSize(0.045);
-            h->GetXaxis()->SetTitleSize(0.05);
-            h->GetYaxis()->SetTitleSize(0.05);
-            h->GetXaxis()->SetTitleOffset(0.77);
-            h->GetYaxis()->SetTitleOffset(0.99);
-
-            h->SetMarkerSize(2.0);
-            h->SetMarkerStyle(20);
-            h->SetMarkerColor(1);
-            h->SetLineColor(1);
-            h->SetLineWidth(3);
-
-            TPaveStats *hstats = new TPaveStats(0.99, 0.99, 0.99, 0.99, "brNDC");
-            hstats->SetTextColor(i+1);
-            hstats->SetOptStat(1111);
-            hstats->Draw();
-            h->GetListOfFunctions()->Add(hstats);
-            hstats->SetParent(h);
-        }
-        else if (i==1) {  // MC nominal
-            option = "HISTSAMES";
-            gPad->RedrawAxis();
-            h->SetLineWidth(3);
-            h->SetLineStyle(1);
-            h->SetLineColor(2);
-            h->SetMarkerSize(1.);
-            h->SetMarkerStyle(22);
-            h->SetMarkerColor(2);
-
-            TPaveStats *hstats = new TPaveStats(0.99,0.99,0.99,0.99,"brNDC");
-            hstats->SetTextColor(i+1);
-            hstats->SetOptStat(1111);
-            hstats->Draw();
-            h->GetListOfFunctions()->Add(hstats);
-            hstats->SetParent(h);
-        }
-        else if (i==2) {  // MC alternative, optional
-            option = "HISTSAMES";
-            gPad->RedrawAxis();
-            h->SetLineWidth(3);
-            h->SetLineStyle(9);
-            h->SetLineColor(806);
-            h->SetMarkerSize(1.);
-            h->SetMarkerStyle(1);
-            h->SetMarkerColor(806);
-
-            TPaveStats *hstats = new TPaveStats(0.99,0.99,0.99,0.99,"brNDC");
-            hstats->SetTextColor(i+1);
-            hstats->SetOptStat(1111);
-            hstats->Draw();
-            h->GetListOfFunctions()->Add(hstats);
-            hstats->SetParent(h);
-        }
-        TGaxis::SetExponentOffset(-0.07, 0, "y");
-        h->GetYaxis()->SetLabelSize(0.045);
-        h->GetXaxis()->SetLabelSize(0.045);
-        h->Draw(option.c_str());
-        legend11->AddEntry(h, data_list[i].second.c_str(), ((i==0) ? "PL" : "L"));
+        pair<bool, int> styleInfo = getStyleInfo(cmpType, i);
+        plotHisto(h, hist_tokens[2], (i==0), styleInfo.first, styleInfo.second);
+        
+        legend11->AddEntry(h, data_list[i].second.c_str(), ((i==0 || (i==1 && cmpData)) ? "PL" : "L"));
         legend11->SetTextSize(0.035);
         legend11->SetBorderSize(0);
         legend11->SetFillStyle(0);
@@ -343,9 +422,9 @@ void compareHisto(TCanvas* canvas,
     string cut="";
     parseEtaCut(analysis_folder, cut);
 
-    textonplot(0.16, 0.83, 0.28, 0.85, 42, 0.058, print_info[0]);
+    textonplot(0.16, 0.83, 0.28, 0.85, 42, 0.058, print_info[0]);  // analysis info
     textonplot(0.53, 0.83, 0.28, 0.85, 42, 0.04, cut);
-    textonplot(0.55, 0.875, 0.84, 1.0, 42, 0.058, print_info[1]);
+    textonplot(0.55, 0.875, 0.84, 1.0, 42, 0.058, print_info[1]);  // lumi info
     textonplot(0.10, 0.875, 0.18, 1.0, 62, 0.058, "CMS");
     textonplot(0.24, 0.860, 0.34, 1.0, 52, 0.058, "  Preliminary");
     rmdot(0.98, 0.97, 1.0, 1.0, 52, "             ");
@@ -356,7 +435,7 @@ void compareHisto(TCanvas* canvas,
     pad11->Update();
     pad11->Modified();
     
-    std::cout << "Main pad drawn successfully" << std::endl; 
+    cout << "Main pad drawn successfully" << endl; 
 
     // Ratio plot pad
     canvas->cd();
@@ -369,79 +448,31 @@ void compareHisto(TCanvas* canvas,
     pad21->Draw();
     pad21->cd();
 
-    TAxis* xaxis = h->GetXaxis();
-    double xmin = xaxis->GetXmin();
-    double xmax = xaxis->GetXmax();
-    
-    TLine *line = new TLine(xmin,1,xmax,1);
-    line->SetLineWidth(3);
-    line->SetLineStyle(9);
+    int idx_ref = (cmpType!=3) ? 1 : 2; // reference histogram index for the ratio plot
+    TH1 *h_ref = hists.at(idx_ref);
 
-    
-
-    hmax = -1;
-    double hmin = 999;
+    setRatioPad(h_ref, hist_tokens[1], (cmpType!=1) ? "Data/MC" : "Data1/Data2");
 
     // DRAWING RATIO
-    for (uint i=1; i<data_list.size(); ++i) {
-        if (!(i==1 || i==2)) continue;
+    for (uint i=0; i<data_list.size(); ++i) {
+        if (i==uint(idx_ref)) continue;
         
         TH1 *h2 = hists.at(i);
+        TH1* h_ratio = (TH1*)h_ref->Clone();
 
-        if (i==1) {
-            // draw a black line at y=1 before every other histogram
-            TH1* hmc = (TH1*)h2->Clone();
-            hmc->SetStats(0);
-            hmc->Divide(h2, h2, 1, 1, "B");
-            
-            hmc->SetMarkerSize(2.0);
-            hmc->SetMarkerStyle(22);
-            hmc->SetMarkerColor(1);
-            hmc->SetLineWidth(3);
-            hmc->SetLineStyle(1);
-            hmc->SetLineColor(1);
-            hmc->SetTitle("");
-            hmc->GetXaxis()->SetTitle(hist_tokens[1].c_str());
-            hmc->GetYaxis()->SetTitle((!cmpData) ? "Data/MC" : "Data1/Data2");
-            hmc->SetMaximum(1.6);
-            hmc->SetMinimum(0.4);
-            hmc->GetXaxis()->SetLabelSize(0.1);
-            hmc->GetYaxis()->SetLabelSize(0.1);
-            hmc->GetXaxis()->SetTitleSize(0.12);
-            hmc->GetYaxis()->SetTitleSize(0.12);
-            hmc->GetYaxis()->SetTitleOffset(0.41);
-            hmc->GetXaxis()->SetTitleOffset(1.15);
-            hmc->GetXaxis()->SetLabelOffset(0.03);
-            hmc->GetXaxis()->SetTickSize(0.08);
-            hmc->GetYaxis()->SetNdivisions(208);
-            hmc->Draw("E");
-        }
+        h_ratio->Divide(h2, h_ref, 1, 1, "B");
 
-        TH1* hn = (TH1*)h2->Clone();
-        hn->SetStats(0);
-        hn->Divide(h, h2, 1, 1, "B");
+        pair<bool, int> styleInfo = getStyleInfo(cmpType, i, true);
 
-        if (i==1) {
-            hn->SetMarkerSize(2.0);
-            hn->SetMarkerStyle(20);
-            hn->SetMarkerColor(2);
-            hn->SetLineWidth(3);
-        } else {
-            hn->SetMarkerSize(1.0);
-            hn->SetMarkerStyle(1);
-            hn->SetLineStyle(1);
-            hn->SetLineWidth(3);
-        }
+        plotHisto(h_ratio, string(""), false, styleInfo.first, styleInfo.second);
 
-        string option = (i==1) ? "ESAME" : "HISTSAMES";
-        hn->Draw(option.c_str());
     }
    
     if (hist_tokens.size()>3 && hist_tokens[3]=="log") pad21->SetLogx();
     pad21->Update();
     pad21->Modified();
 
-    std::cout << "Ratio pad drawn successfully" << std::endl;
+    cout << "Ratio pad drawn successfully" << endl;
 
     canvas->cd();
     canvas->Update();

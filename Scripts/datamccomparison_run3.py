@@ -17,6 +17,7 @@ from utilities.cmp_info import yr_info_base, yr_info_zerobias, yr_info_lepton, a
 def data_mc_comparison_run3(analysis, 
                             year="", 
                             folder_postfix="", 
+                            cmpData=False,
                             doProfiles=False,
                             inputFilename="",
                             outfolder="./"):
@@ -63,7 +64,7 @@ def data_mc_comparison_run3(analysis,
         assert len(tokens) > 1
         ROOT.compareHisto(canvas, 
                           data_list, an_folder,
-                          False, False, 
+                          cmpData, False, 
                           tokens, print_info, 
                           ROOT.std.string(outfolder))
 
@@ -76,7 +77,7 @@ def data_mc_comparison_run3(analysis,
             tokens = str(hprof_line).split(":")
             assert len(tokens) > 1
             ROOT.compareHisto(canvas, data_list, an_folder, 
-                               False, True, 
+                               cmpData, True, 
                                tokens, print_info, 
                                ROOT.std.string(outfolder))
 
@@ -101,6 +102,9 @@ if __name__ == "__main__":
                         type=str, 
                         default="",
                         help='Postfix of the folder in the root files where to get the histograms')
+    parser.add_argument('--cmpData',
+                        action='store_true',
+                        help='Whether to compare data vs data instead of data vs MC')
     parser.add_argument('--doProfiles', 
                         action='store_true',
                         help='Whether to do profile comparisons')
@@ -121,6 +125,7 @@ if __name__ == "__main__":
     data_mc_comparison_run3(analysis=args.analysis,
                             year=args.year,
                             folder_postfix=args.folder_postfix,
+                            cmpData=args.cmpData,
                             doProfiles=args.doProfiles,
                             inputFilename=args.inputFilename,
                             outfolder=args.outfolder)
