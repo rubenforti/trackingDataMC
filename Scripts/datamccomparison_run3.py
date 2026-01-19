@@ -58,8 +58,8 @@ def data_mc_comparison_run3(analysis,
     canvas = ROOT.TCanvas("canvas", "canvas")
     canvas.SetCanvasSize(800, 800)
     canvas.SetLeftMargin(0.11)
-    
-    for hcmp_line in hlist_compare:
+
+    for hcmp_line in [hlist_compare[0]]:
         tokens = str(hcmp_line).split(":")
         assert len(tokens) > 1
         ROOT.compareHisto(canvas, 

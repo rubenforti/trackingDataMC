@@ -277,7 +277,7 @@ void plotHisto(TH1* h,
     }
 
     h->SetMarkerSize(2.0);
-    h->SetMarkerStyle(20);
+    h->SetMarkerStyle(isBullet ? 20 : 22);
     h->SetMarkerColor(colorNum);
     h->SetLineColor(colorNum);
     h->SetLineWidth(3);
@@ -387,7 +387,8 @@ void compareHisto(TCanvas* canvas,
         int nbinsx = h->GetNbinsX();
         
         if (i==0) nentriesdata = h->Integral("width");
-        else if (!profiles) {
+        
+        if (!profiles) {
             double norm = 1.0;
             if (i>0 && (cmpType<=2)) { 
                 norm = nentriesdata / h->Integral("width"); 
@@ -402,8 +403,10 @@ void compareHisto(TCanvas* canvas,
 
         pair<bool, int> styleInfo = getStyleInfo(cmpType, i);
         plotHisto(h, hist_tokens[2], (i==0), styleInfo.first, styleInfo.second);
+
+        cout << "Plotting hist num. " << i << " with bullet: " << styleInfo.first << " and color: " << styleInfo.second << endl;
         
-        legend11->AddEntry(h, data_list[i].second.c_str(), ((i==0 || (i==1 && cmpData)) ? "PL" : "L"));
+        legend11->AddEntry(h, data_list[i].second.c_str(), ((i==0 || (i==1 && (cmpType==3 || cmpType==4))) ? "PL" : "L"));
         legend11->SetTextSize(0.035);
         legend11->SetBorderSize(0);
         legend11->SetFillStyle(0);
@@ -448,24 +451,42 @@ void compareHisto(TCanvas* canvas,
     pad21->Draw();
     pad21->cd();
 
-    int idx_ref = (cmpType!=3) ? 1 : 2; // reference histogram index for the ratio plot
-    TH1 *h_ref = hists.at(idx_ref);
+    vector<int> idxs_ref; // reference histogram indexes for the ratio plot
+    if (cmpType<3) idxs_ref.push_back(1);
+    if (cmpType>1) idxs_ref.push_back(2);
+    if (cmpType>3) idxs_ref.push_back(3);
 
-    setRatioPad(h_ref, hist_tokens[1], (cmpType!=1) ? "Data/MC" : "Data1/Data2");
 
-    // DRAWING RATIO
-    for (uint i=0; i<data_list.size(); ++i) {
-        if (i==uint(idx_ref)) continue;
+    for (uint j=0; j<idxs_ref.size(); ++j) {
         
-        TH1 *h2 = hists.at(i);
-        TH1* h_ratio = (TH1*)h_ref->Clone();
+        int ir = idxs_ref[j];
 
-        h_ratio->Divide(h2, h_ref, 1, 1, "B");
+        cout << "Preparing ratio with hist num. " << ir << " as reference" << endl;
 
-        pair<bool, int> styleInfo = getStyleInfo(cmpType, i, true);
+        TH1 *h_ref = hists.at(ir);
+        
+        if (j==0) setRatioPad(h_ref, hist_tokens[1], (cmpType!=1) ? "Data/MC" : "Data1/Data2");
 
-        plotHisto(h_ratio, string(""), false, styleInfo.first, styleInfo.second);
+        // DRAWING RATIO
+        for (uint i=0; i<data_list.size(); ++i) {
+            if (ir==int(i) || find(idxs_ref.begin(), idxs_ref.end(), int(i))!=idxs_ref.end()) continue;
 
+            cout << "Drawing ratio of hist num. " << i << " over hist num. " << ir << endl;
+            
+            TH1 *h2 = hists.at(i);
+            TH1* h_ratio = (TH1*)h_ref->Clone();
+
+            h_ratio->Divide(h2, h_ref, 1, 1, "B");
+
+            pair<bool, int> styleInfo;
+            if (cmpType!=3) {
+                styleInfo = getStyleInfo(cmpType, ir, false); // use style of denominator hist
+            } else {
+                styleInfo = getStyleInfo(cmpType, i, true); // only exception, since the MC is black in the plot
+            }
+            plotHisto(h_ratio, string(""), false, true, styleInfo.second);
+
+        }
     }
    
     if (hist_tokens.size()>3 && hist_tokens[3]=="log") pad21->SetLogx();
