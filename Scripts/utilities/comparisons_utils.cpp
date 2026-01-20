@@ -223,9 +223,8 @@ pair<bool, int> getStyleInfo(const int& cmpType, const int& index, const bool& i
         } else {
             isBullet = false; // MC alternative
             colorNum = 806;
-        }
-      */
-    }
+        } 
+    } */
     return make_pair(isBullet, colorNum);
 }
 
@@ -310,16 +309,24 @@ void compareHisto(TCanvas* canvas,
                   const string& outfolder)
 {
     cout << "Compare Histo Start" << endl;
-    
-    string datafolder = "DQMData/Run 999999/StandaloneTrackMonitor/Run summary/" + analysis_folder;
-    string mcfolder   = "DQMData/Run 1/StandaloneTrackMonitor/Run summary/" + analysis_folder;
+
+    string pluginName = "StandaloneTrackMonitor";
+    string folderName = analysis_folder;
     string hname(hist_tokens[0]);
     
     if (print_info[0]=="Z#rightarrowee" && hname=="ZInvMass") {
-        datafolder = "DQMData/Run 999999/ZEEDetails/Run summary/ElectronTracks/";
-	    mcfolder = "DQMData/Run 1/ZEEDetails/Run summary/ElectronTracks/";
+        pluginName = "ZEEDetails";
+    } else if ((hname.rfind("n_vs_",0)==0 || hname.rfind("v0_",0)==0)) {
+        if (print_info[0]=="ZeroBias_Lambda")  folderName = "V0Monitoring/Lambda";
+        else if (print_info[0]=="ZeroBias_K0") folderName = "V0Monitoring/Ks";
     }
-    
+
+    string datafolder = "DQMData/Run 999999/" + pluginName + "/Run summary/" + folderName + "/";
+    string mcfolder   = "DQMData/Run 1/"      + pluginName + "/Run summary/" + folderName + "/";
+
+    cout << "Data folder: " << datafolder << endl;
+    cout << "MC folder:   " << mcfolder << endl;
+
     canvas->cd();
 
     TString h_title = hist_tokens[1];

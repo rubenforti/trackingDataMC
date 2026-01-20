@@ -53,19 +53,19 @@ an_info = {
         ],
     },
     "ZeroBias_K0" : {
-        "folder" : "highPurityTracks",
+        "folder" : "K0Tracks",
         "printAnInfo" : "ZeroBias_K0",
         "filenames" : [
-            "highpurity_K0_Histolist_run3.txt",
-            "highpurity_K0_Profile_run3.txt"
+            "k0Histolist_run3.txt",
+            "k0Profile_run3.txt"
         ],
     },
     "ZeroBias_Lambda" : {
-        "folder" : "highPurityTracks",
+        "folder" : "LambdaTracks",
         "printAnInfo" : "ZeroBias_Lambda",
         "filenames" : [
-            "highpurity_Lambda_Histolist_run3.txt",
-            "highpurity_Lambda_Profile_run3.txt"
+            "lambdaHistoList_run3.txt",
+            "lambdaProfile_run3.txt"
         ],
     },
 }

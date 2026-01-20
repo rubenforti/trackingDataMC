@@ -90,7 +90,7 @@ if __name__ == "__main__":
     parser.add_argument('-an', '--analysis', 
                         type=str, 
                         required=True,
-                        choices=['ZeroBias', 'ZEE', 'ZMM'],
+                        choices=['ZeroBias', 'ZEE', 'ZMM', 'K0', 'Lambda'],
                         help='Analysis to run (e.g., ZeroBias, ZEE, ZMM)'
                         )
     parser.add_argument('-y', '--year', 
