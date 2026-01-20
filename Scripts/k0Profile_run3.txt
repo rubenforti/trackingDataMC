@@ -1,0 +1,104 @@
+############
+## Legend ##
+############
+## h_name : x_title : y_title : x_type : y_type : x_low : x_high : x_rebin
+############
+##
+##### DCA & SIP #####
+#####################
+##DistanceOfClosestApproachToPVVsPt:Track pt:Track dxy wrt PV
+##DistanceOfClosestApproachToPVVsEta:Track #eta:Track dxy wrt PV
+##DistanceOfClosestApproachToPVVsPhi:Track #phi:Track dxy wrt PV
+xPointOfClosestApproachVsZ0wrtPV:Z0 of PV:x Point of Closest Approach to PV
+yPointOfClosestApproachVsZ0wrtPV:Z0 of PV:y Point of Closest Approach to PV
+##
+##### Hits in strips ######
+###########################
+##nHitsStripDVsEta:Track #eta:No of hits in SiStrip (Double-sided) per track
+##nHitsStripSVsEta:Track #eta:No of hits in SiStrip (Single-sided) per track
+##nHitsTECDVsEta:Track #eta:No of hits in TEC (Double-sided) per track
+##nHitsTECSVsEta:Track #eta:No of hits in TEC (Single-sided) per track
+##nHitsTIBDVsEta:Track #eta:No of hits in TIB (Double-sided) per track
+##nHitsTIBSVsEta:Track #eta:No of hits in TIB (Single-sided) per track
+##nHitsTIDDVsEta:Track #eta:No of hits in TID (Double-sided) per track
+##nHitsTIDSVsEta:Track #eta:No of hits in TID (Single-sided) per track
+##nHitsTOBDVsEta:Track #eta:No of hits in TOB (Double-sided) per track
+##nHitsTOBSVsEta:Track #eta:No of hits in TOB (Single-sided) per track
+##
+##### Valid hits #####
+######################
+nValidHitsPixBVsEta:Track #eta:No of valid hits in Pixel Barrel per track
+nValidHitsPixEVsEta:Track #eta:No of valid hits in Pixel Endcap per track
+nValidHitsPixVsEta:Track #eta:No of valid hits in Pixel per track
+nValidHitsStripVsEta:Track #eta:No of valid hits in SiStrip per track
+nValidHitsTIBVsEta:Track #eta:No of valid hits in TIB per track
+nValidHitsTOBVsEta:Track #eta:No of valid hits in TOB per track
+nValidHitsTIDVsEta:Track #eta:No of valid hits in TID per track
+nValidHitsTECVsEta:Track #eta:No of valid hits in TEC per track
+nValidHitsPixBVsPhi:Track #phi:No of valid hits in Pixel Barrel per track
+nValidHitsPixEVsPhi:Track #phi:No of valid hits in Pixel Endcap per track
+nValidHitsPixVsPhi:Track #phi:No of valid hits in Pixel per track
+nValidHitsStripVsPhi:Track #phi:No of valid hits in SiStrip per track
+nValidHitsTIBVsPhi:Track #phi:No of valid hits in TIB per track
+nValidHitsTOBVsPhi:Track #phi:No of valid hits in TOB per track
+nValidHitsTIDVsPhi:Track #phi:No of valid hits in TID per track
+nValidHitsTECVsPhi:Track #phi:No of valid hits in TEC per track
+nValidHitsVsCosTheta:Track cos(Theta):No of valid hits per track
+nValidHitsVsEta:Track #eta:No of valid hits per track
+nValidHitsVsPhi:Track #phi:No of valid hits per track
+nValidHitsVsnVtx:No. of vertex:No of valid hits per track
+nValidHitsVspT:Track pT:No of valid hits per track
+##
+##### Lost hits #####
+#####################
+nLostHitsVsCosTheta:Track cos(Theta):No of lost hits per track
+nLostHitsVsEta:Track #eta:No of lost hits per track
+nLostHitsVsPhi:Track #phi:No of lost hits per track
+nLostHitsVspT:Track pT:No of lost hits per track
+nLostHitsPixBVsEta:Track #eta:No of lost hits in Pixel Barrel per track
+nLostHitsPixEVsEta:Track #eta:No of lost hits in Pixel Endcap per track
+nLostHitsPixVsEta:Track #eta:No of lost hits in Pixel per track
+nLostHitsStripVsEta:Track #eta:No of lost hits in SiStrip per track
+nLostHitsTIBVsEta:Track #eta:No of lost hits in TIB per track
+nLostHitsTOBVsEta:Track #eta:No of lost hits in TOB per track
+nLostHitsTIDVsEta:Track #eta:No of lost hits in TID per track
+nLostHitsTECVsEta:Track #eta:No of lost hits in TEC per track
+nLostHitsPixBVsPhi:Track #phi:No of lost hits in Pixel Barrel per track
+nLostHitsPixEVsPhi:Track #phi:No of lost hits in Pixel Endcap per track
+nLostHitsPixVsPhi:Track #phi:No of lost hits in Pixel per track
+nLostHitsStripVsPhi:Track #phi:No of lost hits in SiStrip per track
+nLostHitsTIBVsPhi:Track #phi:No of lost hits in TIB per track
+nLostHitsTOBVsPhi:Track #phi:No of lost hits in TOB per track
+nLostHitsTIDVsPhi:Track #phi:No of lost hits in TID per track
+nLostHitsTECVsPhi:Track #phi:No of lost hits in TEC per track
+##
+##### Track chi2 #####
+######################
+trackChi2oNDFVsEta:Track #eta:#chi^{2}/NDF / 0.1
+trackChi2oNDFVsPhi:Track #phi:#chi^{2}/NDF
+trackChi2probVsEta:Track #eta:#chi^{2} probability / 0.1
+trackChi2probVsPhi:Track #phi:#chi^{2} probability
+##
+##### V0 monitoring #####
+#########################
+v0_Lxy_vs_BX:BX:L_{xy} [cm]
+v0_Lxy_vs_PU:# good PV:L_{xy} [cm]
+v0_Lxy_vs_deltaMass:m-m_{PDG}/m_{DPG}:L_{xy} [cm]
+v0_Lxy_vs_eta:#eta:L_{xy} [cm]
+v0_Lxy_vs_lumi:inst. lumi x10^{30} [Hz cm^{-2}]:L_{xy} [cm]
+v0_Lxy_vs_pt:p_{T} [GeV]:L_{xy} [cm]
+v0_N_vs_BX:BX:# v0
+v0_N_vs_LS:LS:# v0
+v0_N_vs_PU:# good PV:# v0
+v0_N_vs_lumi:inst. lumi x10^{30} [Hz cm^{-2}]:# v0
+v0_deltaMass_vs_BX:BX:m-m_{PDG}/m_{DPG}
+v0_deltaMass_vs_PU:# good PV:m-m_{PDG}/m_{DPG}
+v0_deltaMass_vs_eta:#eta:m-m_{PDG}/m_{DPG}
+v0_deltaMass_vs_lumi:inst. lumi x10^{30} [Hz cm^{-2}]:m-m_{PDG}/m_{PDG}
+v0_deltaMass_vs_pt:p_{T} [GeV]:m-m_{PDG}/m_{PDG}
+v0_mass_vs_BX:BX:mass [GeV]
+v0_mass_vs_PU:# good PV:mass [GeV]
+v0_mass_vs_eta:#eta:mass [GeV]
+v0_mass_vs_lumi:inst. lumi x10^{30} [Hz cm^{-2}]:mass [GeV]
+v0_mass_vs_p:p [GeV]:mass [GeV]
+v0_mass_vs_pt:p_{T} [GeV]:mass [GeV]
