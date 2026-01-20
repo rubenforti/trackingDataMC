@@ -201,21 +201,22 @@ pair<bool, int> getStyleInfo(const int& cmpType, const int& index, const bool& i
     } else if (cmpType == 3) { // Data1-vs-Data2-vs-MC
         if (index == 0) {
             isBullet = true; // Data1
-            colorNum = 2;
+            colorNum = 1;
         } else if (index == 1) {
             isBullet = true; // Data2
-            colorNum = 4;
+            colorNum = 855;
         } else {
             isBullet = false; // MC nominal
-            colorNum = 1;
+            colorNum = 2;
         }
-    } else if (cmpType == 4) { // Data1 vs Data2 vs MC1 vs MC2
+    } /*
+      else if (cmpType == 4) { // Data1 vs Data2 vs MC1 vs MC2
         if (index == 0) {
-            isBullet = true; // Data1
-            colorNum = (!isRatio) ? 1 : 2;
+            isBullet = (!isRatio) ? true : false; // Data1
+            colorNum = 1;
         } else if (index == 1) {
-            isBullet = true; // Data2
-            colorNum = 4;
+            isBullet = (!isRatio) ? true : false; // Data2
+            colorNum = 851;
         } else if (index == 2) {
             isBullet = false; // MC nominal
             colorNum = 2;
@@ -223,6 +224,7 @@ pair<bool, int> getStyleInfo(const int& cmpType, const int& index, const bool& i
             isBullet = false; // MC alternative
             colorNum = 806;
         }
+      */
     }
     return make_pair(isBullet, colorNum);
 }
@@ -281,7 +283,7 @@ void plotHisto(TH1* h,
     h->SetMarkerColor(colorNum);
     h->SetLineColor(colorNum);
     h->SetLineWidth(3);
-    h->SetLineStyle(colorNum!=806 ? 1 : 9); // dashed for alternative MC
+    h->SetLineStyle((colorNum!=806) ? 1 : 9); // dashed for alternative MC
 
     TPaveStats *hstats = new TPaveStats(0.99, 0.99, 0.99, 0.99, "brNDC");
     hstats->SetTextColor(1);
@@ -348,7 +350,7 @@ void compareHisto(TCanvas* canvas,
     else if (data_list.size()==2 && cmpData)  cmpType = 1; // Data1 vs Data2
     else if (data_list.size()==3 && !cmpData) cmpType = 2; // Data vs MC1 vs MC2
     else if (data_list.size()==3 && cmpData)  cmpType = 3; // Data1 vs Data2 vs MC
-    else if (data_list.size()==4 && cmpData)  cmpType = 4; // Data1 vs Data2 vs MC1 vs MC2
+    // else if (data_list.size()==4 && cmpData)  cmpType = 4; // Data1 vs Data2 vs MC1 vs MC2
     else {
         cerr << "Invalid number of files for comparison: " << data_list.size() << endl;
         return;
@@ -406,7 +408,7 @@ void compareHisto(TCanvas* canvas,
 
         cout << "Plotting hist num. " << i << " with bullet: " << styleInfo.first << " and color: " << styleInfo.second << endl;
         
-        legend11->AddEntry(h, data_list[i].second.c_str(), ((i==0 || (i==1 && (cmpType==3 || cmpType==4))) ? "PL" : "L"));
+        legend11->AddEntry(h, data_list[i].second.c_str(), ((i==0 || (i==1 && cmpType==3)) ? "PL" : "L"));
         legend11->SetTextSize(0.035);
         legend11->SetBorderSize(0);
         legend11->SetFillStyle(0);
@@ -454,7 +456,7 @@ void compareHisto(TCanvas* canvas,
     vector<int> idxs_ref; // reference histogram indexes for the ratio plot
     if (cmpType<3) idxs_ref.push_back(1);
     if (cmpType>1) idxs_ref.push_back(2);
-    if (cmpType>3) idxs_ref.push_back(3);
+    // if (cmpType>3) idxs_ref.push_back(3);
 
 
     for (uint j=0; j<idxs_ref.size(); ++j) {
@@ -479,7 +481,7 @@ void compareHisto(TCanvas* canvas,
             h_ratio->Divide(h2, h_ref, 1, 1, "B");
 
             pair<bool, int> styleInfo;
-            if (cmpType!=3) {
+            if (cmpType < 3) {
                 styleInfo = getStyleInfo(cmpType, ir, false); // use style of denominator hist
             } else {
                 styleInfo = getStyleInfo(cmpType, i, true); // only exception, since the MC is black in the plot
