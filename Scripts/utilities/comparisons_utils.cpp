@@ -1,5 +1,8 @@
 #include "comparisons_utils.h"
 
+double rrange_low  = 0.4;
+double rrange_high = 1.6;
+
 void textonplot(double x1, double y1, double x2, double y2, double txtfont, double txtsize=0.058, TString s="")
 {
     TPaveText* tText1 = new TPaveText(x1, y1, x2, y2, "brNDC");
@@ -24,39 +27,6 @@ void rmdot(double x1, double y1, double x2, double y2, double txtfont, TString s
     tText1->Draw();
 }
 
-void openFiles(vector<TFile*>& v1, vector<string>& v2, string& filename, const string& analysis)
-{
-    static const int BUF_SIZE = 512;
-
-    vector<map<string, string>> file_list;
-
-    if (filename.empty()) filename = "filelist13p6TeV_" + analysis + ".txt";
-    
-    // Open the file containing the datacards
-    ifstream fin(filename, ios::in);
-    if (!fin) {
-        cerr << "Input File: " << filename << " could not be opened!" << endl;
-        return;
-    }
-    char buf[BUF_SIZE];
-    while (fin.getline(buf, BUF_SIZE, '\n')) {  // Pops off the newline character
-        string line(buf);
-        if (line.empty()) continue;
-        if (line.substr(0,2) == "//") continue;
-        if (line.substr(0,1) == "#") continue;
-        cout << "file: " << line << endl;
-
-        vector<string> tokens;
-        tokenize(line, tokens, ":");
-        assert(tokens.size() > 1);
-
-        TFile* f = TFile::Open(tokens[0].c_str());
-        v1.push_back(f);
-        v2.push_back(tokens[1].c_str());
-    }
-    fin.close();
-}
-
 vector<pair<TFile*, string>> openFiles(string& filename, const string& analysis) {
     static const int BUF_SIZE = 512;
 
@@ -76,11 +46,12 @@ vector<pair<TFile*, string>> openFiles(string& filename, const string& analysis)
         if (line.empty()) continue;
         if (line.substr(0,2) == "//") continue;
         if (line.substr(0,1) == "#") continue;
-        cout << "file: " << line << endl;
 
         vector<string> tokens;
         tokenize(line, tokens, ":");
         assert(tokens.size() > 1);
+
+        cout << "File: " << tokens[0] << " (" << tokens[1] << ") " << endl;
 
         TFile* f = TFile::Open(tokens[0].c_str());
         file_list.push_back(make_pair(f, tokens[1].c_str()));
@@ -88,7 +59,6 @@ vector<pair<TFile*, string>> openFiles(string& filename, const string& analysis)
     fin.close();
     return file_list;
 }
-
 
 void readHistograms(vector<string>& v, const string& filename) {
     static const int BUF_SIZE = 512;
@@ -110,13 +80,6 @@ void readHistograms(vector<string>& v, const string& filename) {
         v.push_back(line);
     }
     fin.close();
-}
-
-void closeFiles(vector<TFile*>& v) {
-    for (uint i = 0; i < v.size(); ++i) {
-        TFile* f = v[i];
-        if (f) f->Close();
-    }
 }
 
 void closeFiles(vector<pair<TFile*, string>>& v) {
@@ -171,7 +134,6 @@ string parseEtaCut(const string& input) {
     }
 
     return out_cut;
-
 }
 
 
@@ -239,8 +201,8 @@ void setRatioPad(TH1* h, const string& xName, const string& yName) {
 
     hline->GetXaxis()->SetTitle(xName.c_str());
     hline->GetYaxis()->SetTitle(yName.c_str());
-    hline->SetMaximum(1.6);
-    hline->SetMinimum(0.4);
+    hline->SetMaximum(rrange_high);
+    hline->SetMinimum(rrange_low);
     hline->GetXaxis()->SetLabelSize(0.1);
     hline->GetYaxis()->SetLabelSize(0.1);
     hline->GetXaxis()->SetTitleSize(0.12);

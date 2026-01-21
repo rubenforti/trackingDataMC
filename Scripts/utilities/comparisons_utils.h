@@ -24,11 +24,7 @@ typedef unsigned int uint;
 
 void tokenize(const string& str, vector<string>& tokens, const string& delimiters=" ");
 
-void openFiles(vector<TFile*>& v, vector<string>& l, string& f, const string& analysis);
-
 vector<pair<TFile*, string>> openFiles(string& filename, const string& analysis);
-
-void closeFiles(vector<TFile*>& v);
 
 void closeFiles(vector<pair<TFile*, string>>& v);
 

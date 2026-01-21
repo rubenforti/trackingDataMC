@@ -6,10 +6,9 @@ import ROOT
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
-current_path = os.path.dirname(__file__)
-header_path = os.path.join(current_path, 'utilities', 'comparisons_utils.h')
+current_path = os.path.dirname(os.path.abspath(__file__))
+cpp_path = os.path.join(current_path, 'utilities', 'comparisons_utils.cpp')
 
-ROOT.gInterpreter.Declare('#include "'+header_path+'"')
 ROOT.gSystem.CompileMacro('utilities/comparisons_utils.cpp', opt="ks")
 
 from utilities.cmp_info import yr_info_base, yr_info_zerobias, yr_info_lepton, an_info
@@ -23,11 +22,6 @@ def data_mc_comparison_run3(analysis,
                             outfolder="./"):
     
     print(f"Doing comparisons for {analysis} {year} analysis")
-    
-    #filelist = ROOT.std.vector('TFile*')()
-    #lglist = ROOT.std.vector('string')()
-    
-    #ROOT.openFiles(filelist, lglist, ROOT.std.string(inputFilename), ROOT.std.string(analysis))
 
     data_list = ROOT.openFiles(ROOT.std.string(inputFilename), ROOT.std.string(analysis))
 
@@ -62,7 +56,7 @@ def data_mc_comparison_run3(analysis,
     canvas.SetCanvasSize(800, 800)
     canvas.SetLeftMargin(0.11)
 
-    for hcmp_line in [hlist_compare[0]]:
+    for hcmp_line in hlist_compare:
         tokens = str(hcmp_line).split(":")
         assert len(tokens) > 1
         ROOT.compareHisto(canvas, 
