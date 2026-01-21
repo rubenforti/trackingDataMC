@@ -145,8 +145,9 @@ void tokenize(const string& str, vector<string>& tokens, const string& delimiter
   }
 }    
 
-void parseEtaCut(const string& input, string& out_cut) {
+string parseEtaCut(const string& input) {
     
+    string out_cut = "";
     size_t pos = input.rfind("Eta");
     string cutVal = (pos != string::npos) ? input.substr(pos) : input;
     smatch match;
@@ -155,21 +156,21 @@ void parseEtaCut(const string& input, string& out_cut) {
         string val = match[1];
         replace(val.begin(), val.end(), 'p', '.');
         out_cut = "|#eta| > " + val;
-    }
-
-    if (regex_match(cutVal, match, regex(R"(Eta([0-9p]+)to([0-9p]+))"))) {
+    } else if (regex_match(cutVal, match, regex(R"(Eta([0-9p]+)to([0-9p]+))"))) {
         string val1 = match[1];
         string val2 = match[2];
         replace(val1.begin(), val1.end(), 'p', '.');
         replace(val2.begin(), val2.end(), 'p', '.');
         out_cut = val1 + " < |#eta| < " + val2;
-    }
-
-    if (regex_match(cutVal, match, regex(R"(EtaUnder([0-9p]+))"))) {
+    } else if (regex_match(cutVal, match, regex(R"(EtaUnder([0-9p]+))"))) {
         string val = match[1];
         replace(val.begin(), val.end(), 'p', '.');
         out_cut = "|#eta| < " + val;
+    } else {
+        out_cut = input;
     }
+
+    return out_cut;
 
 }
 
@@ -431,11 +432,10 @@ void compareHisto(TCanvas* canvas,
     }
 
     // Add eta cut info, if any. Assumes folder_postfix starts with "Eta".
-    string cut="";
-    parseEtaCut(analysis_folder, cut);
+    string varCutInfo = parseEtaCut(print_info[2]);
 
     textonplot(0.16, 0.83, 0.28, 0.85, 42, 0.058, print_info[0]);  // analysis info
-    textonplot(0.53, 0.83, 0.28, 0.85, 42, 0.04, cut);
+    textonplot(0.53, 0.83, 0.28, 0.85, 42, 0.04, varCutInfo.c_str());  // variable cut info
     textonplot(0.55, 0.875, 0.84, 1.0, 42, 0.058, print_info[1]);  // lumi info
     textonplot(0.10, 0.875, 0.18, 1.0, 62, 0.058, "CMS");
     textonplot(0.24, 0.860, 0.34, 1.0, 52, 0.058, "  Preliminary");

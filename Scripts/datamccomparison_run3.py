@@ -46,13 +46,16 @@ def data_mc_comparison_run3(analysis,
     print_info = ROOT.std.vector('string')([
         an_info[analysis]["printAnInfo"],
         yr_dict.get(year, ""),
-        #ROOT.std.string(luminfo)
+        folder_postfix
     ])
 
     an_folder = ROOT.std.string(an_info[analysis]["folder"] + folder_postfix)
 
     ROOT.readHistograms(hlist_compare, ROOT.std.string(an_info[analysis]["filenames"][0]))
     print(f">>> # of histograms compare: {len(hlist_compare)}")
+
+    if not os.path.exists(outfolder):
+        os.makedirs(outfolder)
 
     
     canvas = ROOT.TCanvas("canvas", "canvas")
@@ -102,6 +105,14 @@ if __name__ == "__main__":
                         type=str, 
                         default="",
                         help='Postfix of the folder in the root files where to get the histograms')
+    parser.add_argument('-i', '--input', 
+                        type=str,
+                        default="",
+                        help='Filename containing list of ROOT files to open, default uses predefined names')
+    parser.add_argument('-o', '--outfolder', 
+                        type=str, 
+                        default="./",
+                        help='Output folder for comparison plots')
     parser.add_argument('--cmpData',
                         action='store_true',
                         help='Whether to compare data vs data instead of data vs MC')
@@ -111,14 +122,6 @@ if __name__ == "__main__":
     parser.add_argument('--doScatter',
                         action='store_true',
                         help='Whether to do scatter plot comparisons')
-    parser.add_argument('--inputFilename', 
-                        type=str,
-                        default="",
-                        help='Filename containing list of ROOT files to open, default uses predefined names')
-    parser.add_argument('--outfolder', 
-                        type=str, 
-                        default="./",
-                        help='Output folder for comparison plots')
 
     args = parser.parse_args()
 
@@ -127,7 +130,7 @@ if __name__ == "__main__":
                             folder_postfix=args.folder_postfix,
                             cmpData=args.cmpData,
                             doProfiles=args.doProfiles,
-                            inputFilename=args.inputFilename,
+                            inputFilename=args.input,
                             outfolder=args.outfolder)
 
 

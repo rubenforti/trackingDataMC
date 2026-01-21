@@ -38,7 +38,7 @@ void textonplot(double x1, double y1, double x2, double y2, double txtfont, doub
 
 void rmdot(double x1, double y1, double x2, double y2, double txtfont, TString s);
 
-void parseEtaCut(const string& input, string& out_cut);
+string parseEtaCut(const string& input);
 
 pair<bool, int> getStyleInfo(const int& cmpType, const int& index, const bool& isRatio);
 
