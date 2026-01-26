@@ -60,14 +60,15 @@ vector<pair<TFile*, string>> openFiles(string& filename, const string& analysis)
     return file_list;
 }
 
-void readHistograms(vector<string>& v, const string& filename) {
+vector<string> readHistograms(const string& filename) {
     static const int BUF_SIZE = 512;
+    vector<string> v;
 
     // Open the file containing the datacards
     ifstream fin(filename, ios::in);    
     if (!fin) {
         cerr << "Input File: " << filename << " could not be opened!" << endl;
-        return;
+        return v;
     }
     char buf[BUF_SIZE];
     while (fin.getline(buf, BUF_SIZE, '\n')) {  // Pops off the newline character
@@ -76,10 +77,12 @@ void readHistograms(vector<string>& v, const string& filename) {
         if (line.substr(0,2) == "//") continue;
         if (line.substr(0,1) == "#") continue;
 
-        cout << "histogram: " << line << endl;
+        cout << "Histogram: " << line << endl;
         v.push_back(line);
     }
     fin.close();
+
+    return v;
 }
 
 void closeFiles(vector<pair<TFile*, string>>& v) {
@@ -262,6 +265,63 @@ void plotHisto(TH1* h,
     h->Draw(option.c_str());
 }
 
+
+void fit_and_plot_trackPCA(vector<pair<TH1*, bool>> fitsPCA_info, TLegend* legend) {
+
+    vector<pair<double, double>> fitResults; // to store fit results for trackPCA
+
+    for (const auto& fitInfo : fitsPCA_info) {
+        TH1* h = fitInfo.first;
+        bool isData = fitInfo.second;
+
+        TF1* fitFunc = new TF1((isData ? "fa1" : "fa2"), 
+                               "[0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])+[3])", 
+                               -8., 8.);
+
+        fitFunc->SetParameters(0, 250000000);
+        fitFunc->SetParameters(1, 0.);
+        fitFunc->SetParameters(2, 4);
+        fitFunc->SetParameters(3, 0.);
+        fitFunc->SetLineColor((isData) ? kBlue : kGreen);
+        
+        h->Fit(fitFunc,"Q","SAME",-8.,8.);
+        fitFunc->Draw("SAME");
+        legend->AddEntry(fitFunc, (isData ? "Data fit" : "MC fit"), "L");
+
+        fitResults.push_back(make_pair(fitFunc->GetParameter(1), abs(fitFunc->GetParameter(2))));
+    }
+
+    legend->Draw();
+
+    // Print fit results
+    TLegend *legend12 = new TLegend(0.63,0.45,0.70,0.60);
+    TLegend *legend13 = new TLegend(0.66,0.60,0.70,0.65);
+    legend13->SetHeader("Fit results");
+
+    ostringstream datamu, datasigma, mcmu, mcsigma;
+    datamu.precision(2);
+    datasigma.precision(2);
+    mcmu.precision(2);
+    mcsigma.precision(2);
+    datamu << std::fixed << fitResults[0].first;
+    datasigma << std::fixed << fitResults[0].second;
+    mcmu << std::fixed << fitResults[1].first;
+    mcsigma << std::fixed << fitResults[1].second;
+
+    legend12->AddEntry((TObject*)0, ((string("Data #mu=")+datamu.str()+string(" cm")).c_str()), "");
+    legend12->AddEntry((TObject*)0, ((string("Data #sigma=")+datasigma.str()+string(" cm")).c_str()), "");
+    legend12->AddEntry((TObject*)0, ((string("MC #mu=")+mcmu.str()+string(" cm")).c_str()), "");
+    legend12->AddEntry((TObject*)0, ((string("MC #sigma=")+mcsigma.str()+string(" cm")).c_str()), "");
+    legend12->SetTextSize(0.035);
+    legend12->SetBorderSize(0);
+    legend12->SetFillStyle(0);
+    legend12->Draw();
+    legend13->SetTextSize(0.035);
+    legend13->SetBorderSize(0);
+    legend13->SetFillStyle(0);
+    legend13->Draw();
+}
+
 void compareHisto(TCanvas* canvas, 
                   const vector<pair<TFile*, string>>& data_list, 
                   const string& analysis_folder,
@@ -287,9 +347,6 @@ void compareHisto(TCanvas* canvas,
     string datafolder = "DQMData/Run 999999/" + pluginName + "/Run summary/" + folderName + "/";
     string mcfolder   = "DQMData/Run 1/"      + pluginName + "/Run summary/" + folderName + "/";
 
-    cout << "Data folder: " << datafolder << endl;
-    cout << "MC folder:   " << mcfolder << endl;
-
     canvas->cd();
 
     TString h_title = hist_tokens[1];
@@ -309,11 +366,7 @@ void compareHisto(TCanvas* canvas,
 
     double hmax = -1;
     double nentriesdata = 0;
-
     vector<TH1*> hists;
-
-    cout << "Tokens read: " << hist_tokens.size() << endl;
-    cout << "Data list size: " << data_list.size() << endl;
 
     int cmpType;
     if      (data_list.size()==2 && !cmpData) cmpType = 0; // Data vs MC
@@ -325,6 +378,8 @@ void compareHisto(TCanvas* canvas,
         cerr << "Invalid number of files for comparison: " << data_list.size() << endl;
         return;
     }
+
+    vector<pair<TH1*, bool>> fitsPCA_info; // to store fit results for trackPCA
 
     // DRAWING PLOTS
     for (uint i=0; i<data_list.size(); ++i) {
@@ -374,19 +429,24 @@ void compareHisto(TCanvas* canvas,
         if (h->GetMaximum() > hmax) hmax = h->GetMaximum();
 
         pair<bool, int> styleInfo = getStyleInfo(cmpType, i);
+
+        // cout << "Plotting hist num. " << i << " with bullet: " << styleInfo.first << " and color: " << styleInfo.second << endl;
         plotHisto(h, hist_tokens[2], (i==0), styleInfo.first, styleInfo.second);
 
-        cout << "Plotting hist num. " << i << " with bullet: " << styleInfo.first << " and color: " << styleInfo.second << endl;
+        if (hname == "beamSpotZpos") {
+            fitsPCA_info.push_back(make_pair(h, (i==0 || (i==1 && cmpData))));
+        }
         
         legend11->AddEntry(h, data_list[i].second.c_str(), ((i==0 || (i==1 && cmpType==3)) ? "PL" : "L"));
         legend11->SetTextSize(0.035);
         legend11->SetBorderSize(0);
         legend11->SetFillStyle(0);
+
     }
 
     TH1* h = hists.at(0);
     if (!profiles) {
-        double fct = (hist_tokens.size()>4 && hist_tokens[4]=="log") ? 6 : 1.25;
+        double fct = (hist_tokens.size()>4 && hist_tokens[4]=="log") ? 10.2 : 1.25;
         h->SetMaximum(fct * hmax);
     } else {
         h->SetMinimum(min(0.0, 1.5*h->GetMinimum()));
@@ -405,7 +465,13 @@ void compareHisto(TCanvas* canvas,
     
     if (hist_tokens.size()>3 && hist_tokens[3]=="log") pad11->SetLogx();
     if (hist_tokens.size()>4 && hist_tokens[4]=="log") pad11->SetLogy();
-    legend11->Draw();
+
+    if (hname == "beamSpotZpos") {
+        fit_and_plot_trackPCA(fitsPCA_info, legend11);
+    } else {
+        legend11->Draw();
+    }
+
     pad11->Update();
     pad11->Modified();
     
@@ -431,8 +497,7 @@ void compareHisto(TCanvas* canvas,
     for (uint j=0; j<idxs_ref.size(); ++j) {
         
         int ir = idxs_ref[j];
-
-        cout << "Preparing ratio with hist num. " << ir << " as reference" << endl;
+        // cout << "Preparing ratio with hist num. " << ir << " as reference" << endl;
 
         TH1 *h_ref = hists.at(ir);
         
@@ -441,8 +506,7 @@ void compareHisto(TCanvas* canvas,
         // DRAWING RATIO
         for (uint i=0; i<data_list.size(); ++i) {
             if (ir==int(i) || find(idxs_ref.begin(), idxs_ref.end(), int(i))!=idxs_ref.end()) continue;
-
-            cout << "Drawing ratio of hist num. " << i << " over hist num. " << ir << endl;
+            // cout << "Drawing ratio of hist num. " << i << " over hist num. " << ir << endl;
             
             TH1 *h2 = hists.at(i);
             TH1* h_ratio = (TH1*)h_ref->Clone();
@@ -461,6 +525,7 @@ void compareHisto(TCanvas* canvas,
     }
    
     if (hist_tokens.size()>3 && hist_tokens[3]=="log") pad21->SetLogx();
+    rmdot(0.95, 0.95, 1.0, 1.0, 52, "             ");    
     pad21->Update();
     pad21->Modified();
 

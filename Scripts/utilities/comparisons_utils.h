@@ -3,6 +3,8 @@
 
 #include "TFile.h"
 #include "TH1.h"
+#include "TF1.h"
+#include "TFitResultPtr.h"
 #include "TProfile.h"
 #include "TCanvas.h"
 #include "TLegend.h"
@@ -28,7 +30,7 @@ vector<pair<TFile*, string>> openFiles(string& filename, const string& analysis)
 
 void closeFiles(vector<pair<TFile*, string>>& v);
 
-void readHistograms(vector<string>& v, const string& hists_fname);
+vector<string> readHistograms(const string& hists_fname);
 
 void textonplot(double x1, double y1, double x2, double y2, double txtfont, double txtsize, TString s);
 
@@ -45,6 +47,8 @@ void plotHisto(TH1* h,
                const bool& isPrimaryHist, 
                const bool& isBullet, 
                const int& colorNum);
+
+void fit_and_plot_VertexZpos(vector<pair<TH1*, bool>> fitsVtxZ_info, TLegend* legend);
 
 void compareHisto(TCanvas* canvas, 
                   const vector<pair<TFile*, string>>& data_list, 

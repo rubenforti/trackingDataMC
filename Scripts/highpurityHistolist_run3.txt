@@ -6,7 +6,7 @@
 ##
 ##### DCA & SIP #####
 #####################
-DistanceOfClosestApproachToPV:Track dxy wrt PV (cm):Number of tracks / 0.02 cm: :log
+DistanceOfClosestApproachToPV:Track dxy wrt PV (cm):Number of tracks / 0.02 cm: :log: : :10
 DistanceOfClosestApproachToPVZoomed:Track dxy wrt PV (cm):Number of tracks: :log:-0.02:0.02
 ip2dToPV:Track 2D IP wrt PV (cm):Number of tracks / 0.02 cm: :log
 ##iperr2dToPV:Track 2D IP error wrt PV (cm):Number of tracks:log:lin
@@ -21,7 +21,7 @@ ip3dToPV:Track 3D IP wrt PV (cm):Number of tracks: :log
 ##ip3dToPV2validpixelhits:Track 3D IP wrt PV (cm) (nPixelValidHits>=2):Number of tracks: :log
 iperr3dToPV:Track 3D IP error wrt PV (cm):Number of tracks:log:log:0:1:1
 ##iperr3dToPV2validpixelhits:Track 3D IP error wrt PV (cm) (nPixelValidHits>=2):Number of tracks:log:log
-sip3dToPV:Track 3D SIP wrt PV:Number of tracks: :log:-5:5
+sip3dToPV:Track 3D SIP wrt PV:Number of tracks: :log:-5:5:5
 ##sip3dToPV2validpixelhits:Track 3D SIP wrt PV (nPixelValidHits>=2):Number of tracks: :log
 sipDxyToPV:SIP in xy plane wrt PV:Number of tracks / 0.2: :log
 sipDzToPV:SIP in z-axis wrt PV:Number of tracks / 0.2: :log
@@ -49,7 +49,7 @@ sip3dToBS:Track 3D SIP wrt BS:Number of tracks: :log
 #########################################
 beamSpotXYpos:Track dxy wrt beamspot (cm):Number of tracks / 0.2 cm
 beamSpotXYposerr:Tout-court error (cm):Number of tracks / 0.2 cm
-beamSpotZpos:Track dz to beamspot (cm):Numberof tracks / 0.4 cm
+beamSpotZpos:Track dz to beamspot (cm):Number of tracks / 0.4 cm
 beamSpotZposerr:Track dz error to beamspot (cm):Number of tracks / 0.1 cm
 ##
 ##### Cluster Properties #####
@@ -94,9 +94,9 @@ nVertex:Number of vertices:Number of events
 ##
 ##### Number of Lost Hits #####
 ###############################
-nLostHitByLayer:Number of lost hits by layers: : :log
-nLostHitByLayerPix:Number of lost hit in Pixel layers: : :log
-nLostHitByLayerStrip:Number of lost hit in Strip layers: : :log
+nLostHitByLayer:Layer with lost hits: : :log
+nLostHitByLayerPix:Pixel layer with lost hits: : :log
+nLostHitByLayerStrip:Strip layer with lost hits: : :log
 nlostHits:Number of lost hits:Number of Tracks: :log
 nlostPixelBarrelHits:Number of lost hits in Pixel Barrel:Number of Tracks: :log
 nlostPixelEndcapHits:Number of lost hits in Pixel Endcap:Number of Tracks: :log
@@ -153,7 +153,7 @@ trackqOverp:q over p:Numberof tracks
 trackqOverperr:Error in q over p:Number of tracks
 trackalgo:Track algo:Number of tracks
 trackorigalgo:Track original algo:Number of tracks
-trackDeltaRwrtClosestTrack:min#DeltaR(considered track,other tracks)
+##trackDeltaRwrtClosestTrack:min#DeltaR(considered track,other tracks)
 ##
 ##### Vertex Properties #####
 #############################
