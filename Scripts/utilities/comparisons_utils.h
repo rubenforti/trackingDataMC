@@ -40,7 +40,7 @@ string parseEtaCut(const string& input);
 
 pair<bool, int> getStyleInfo(const int& cmpType, const int& index, const bool& isRatio);
 
-void setRatioPad(TH1* h, const string& xName, const string& yName);
+void setRatioPad(TH1* h, const string& xName, const string& yName, const double& rrange_low, const double& rrange_high);
 
 void plotHisto(TH1* h, 
                const string& yName, 
@@ -57,6 +57,7 @@ void compareHisto(TCanvas* canvas,
                   const bool& profiles,
                   const vector<string>& hist_tokens,
                   const vector<string>& print_info, 
+                  const vector<double>& rrange,
                   const string& outfolder); 
 
 

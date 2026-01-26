@@ -1,8 +1,5 @@
 #include "comparisons_utils.h"
 
-double rrange_low  = 0.4;
-double rrange_high = 1.6;
-
 void textonplot(double x1, double y1, double x2, double y2, double txtfont, double txtsize=0.058, TString s="")
 {
     TPaveText* tText1 = new TPaveText(x1, y1, x2, y2, "brNDC");
@@ -194,7 +191,7 @@ pair<bool, int> getStyleInfo(const int& cmpType, const int& index, const bool& i
     return make_pair(isBullet, colorNum);
 }
 
-void setRatioPad(TH1* h, const string& xName, const string& yName) {
+void setRatioPad(TH1* h, const string& xName, const string& yName, const double& rrange_low, const double& rrange_high) {
     h->SetTitle("");
     h->SetStats(0);
     
@@ -329,6 +326,7 @@ void compareHisto(TCanvas* canvas,
                   const bool& profiles,
                   const vector<string>& hist_tokens,
                   const vector<string>& print_info, 
+                  const vector<double>& rrange,
                   const string& outfolder)
 {
     cout << "Compare Histo Start" << endl;
@@ -501,7 +499,7 @@ void compareHisto(TCanvas* canvas,
 
         TH1 *h_ref = hists.at(ir);
         
-        if (j==0) setRatioPad(h_ref, hist_tokens[1], (cmpType!=1) ? "Data/MC" : "Data1/Data2");
+        if (j==0) setRatioPad(h_ref, hist_tokens[1], (cmpType!=1) ? "Data/MC" : "Data1/Data2", rrange[0], rrange[1]);
 
         // DRAWING RATIO
         for (uint i=0; i<data_list.size(); ++i) {

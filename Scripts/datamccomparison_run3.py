@@ -13,13 +13,37 @@ ROOT.gSystem.CompileMacro('utilities/comparisons_utils.cpp', opt="ks")
 
 from utilities.cmp_info import yr_info_base, yr_info_zerobias, yr_info_lepton, an_info
 
+
+def hist_idxs(filename, histNames):
+    idxs = []
+    count = 0
+    with open(filename, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+        for line in lines:
+
+            if line.startswith("##"):
+                continue
+
+            if any(line.startswith(f"{h}:") for h in histNames):
+                idxs.append(count)
+            
+            count += 1
+        
+        if len(idxs) == 0:
+            print(f">>> WARNING: No matching hist names found in {filename}")
+
+    return idxs
+
+
 def data_mc_comparison_run3(analysis, 
                             year="", 
-                            folder_postfix="", 
+                            folder_postfix="",
+                            histNames=[], 
                             cmpData=False,
                             doProfiles=False,
                             inputFilename="",
-                            outfolder="./"):
+                            outfolder="./",
+                            rrange=[0.4, 1.6]):
     
     print(f"Doing comparisons for {analysis} {year} analysis")
 
@@ -45,12 +69,20 @@ def data_mc_comparison_run3(analysis,
 
     an_folder = ROOT.std.string(an_info[analysis]["folder"] + folder_postfix)
 
-    ROOT.readHistograms(hlist_compare, ROOT.std.string(an_info[analysis]["filenames"][0]))
+    hlist_compare = ROOT.readHistograms(ROOT.std.string(an_info[analysis]["filenames"][0]))
     print(f">>> # of histograms compare: {len(hlist_compare)}")
 
-    if not os.path.exists(outfolder):
-        os.makedirs(outfolder)
+    if len(histNames) > 0:
+        hist_idxs_list = hist_idxs(an_info[analysis]["filenames"][0], histNames)
+        hlist_compare_filtered = ROOT.std.vector('string')()
+        for i, hName in enumerate(hlist_compare):
+            if i in hist_idxs_list:
+                hlist_compare_filtered.push_back(hName)
+        hlist_compare = hlist_compare_filtered
+        print(f">>> # of histograms after filtering: {hlist_compare.size()}")
 
+    if not os.path.exists(outfolder): 
+        os.makedirs(outfolder)
     
     canvas = ROOT.TCanvas("canvas", "canvas")
     canvas.SetCanvasSize(800, 800)
@@ -62,12 +94,12 @@ def data_mc_comparison_run3(analysis,
         ROOT.compareHisto(canvas, 
                           data_list, an_folder,
                           cmpData, False, 
-                          tokens, print_info, 
+                          tokens, print_info, ROOT.std.vector('double')({rrange[0], rrange[1]}),
                           ROOT.std.string(outfolder))
 
     
     if doProfiles:
-        ROOT.readHistograms(hlist_profile, ROOT.std.string(an_info[analysis]["filenames"][1]))
+        hlist_profile = ROOT.readHistograms(ROOT.std.string(an_info[analysis]["filenames"][1]))
         print(f">>> # of histograms profile: {len(hlist_profile)}")
         
         for hprof_line in hlist_profile:
@@ -107,6 +139,11 @@ if __name__ == "__main__":
                         type=str, 
                         default="./",
                         help='Output folder for comparison plots')
+    parser.add_argument('-n', '--histNames',
+                        type=str,
+                        nargs='*',
+                        default=[],
+                        help='Hist names to be compared, if not provided all histograms in the specific file are compared')
     parser.add_argument('--cmpData',
                         action='store_true',
                         help='Whether to compare data vs data instead of data vs MC')
@@ -116,13 +153,20 @@ if __name__ == "__main__":
     parser.add_argument('--doScatter',
                         action='store_true',
                         help='Whether to do scatter plot comparisons')
+    parser.add_argument('--rrange',
+                        type=float,
+                        nargs=2,
+                        default=[0.4, 1.6],
+                        help='Y-axis range for ratio plots')
 
     args = parser.parse_args()
 
     data_mc_comparison_run3(analysis=args.analysis,
                             year=args.year,
                             folder_postfix=args.folder_postfix,
+                            histNames=args.histNames,
                             cmpData=args.cmpData,
+                            rrange=args.rrange,
                             doProfiles=args.doProfiles,
                             inputFilename=args.input,
                             outfolder=args.outfolder)
