@@ -1,6 +1,7 @@
 #ifndef comparisons_utils_run3_h
 #define comparisons_utils_run3_h
 
+#include "TDirectory.h"
 #include "TFile.h"
 #include "TH1.h"
 #include "TF1.h"
@@ -38,15 +39,14 @@ void rmdot(double x1, double y1, double x2, double y2, double txtfont, TString s
 
 string parseEtaCut(const string& input);
 
-pair<bool, int> getStyleInfo(const int& cmpType, const int& index, const bool& isRatio);
+vector<int> getStyleInfo(const int& cmpType, const int& index, const bool& isRatio);
 
 void setRatioPad(TH1* h, const string& xName, const string& yName, const double& rrange_low, const double& rrange_high);
 
 void plotHisto(TH1* h, 
                const string& yName, 
                const bool& isPrimaryHist, 
-               const bool& isBullet, 
-               const int& colorNum);
+               const vector<int>& styleOpt);
 
 void fit_and_plot_VertexZpos(vector<pair<TH1*, bool>> fitsVtxZ_info, TLegend* legend);
 
