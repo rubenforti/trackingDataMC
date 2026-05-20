@@ -6,13 +6,14 @@
 ##
 ##### Dilepton cos(phi) and mass #####
 ######################################
-ZInvMass:m_{ll}:Events: :log
-cosPhi3Ddilepton:cos#Phi_{3D,ll}:Events: :log
+ZInvMass:m_{ll} (GeV^{2}):Number of events / GeV^{2}: :log
+cosPhi3Ddilepton:cos#Phi_{3D,ll}:Number of events / 0.01: :log
+Zpt:p_{T}^{ll} (GeV):Number of events / GeV
 ##
 ##### DCA & SIP #####
 #####################
 DistanceOfClosestApproachToPV:Track dxy wrt PV (cm):Number of tracks / 0.02 cm: :log: : :10
-DistanceOfClosestApproachToPVZoomed:Track dxy wrt PV (cm):Number of tracks: :log:-0.02:0.02:10
+DistanceOfClosestApproachToPVZoomed:Track dxy wrt PV (cm):Number of tracks / 0.002 cm: :log:-0.02:0.02:10
 ip2dToPV:Track 2D IP wrt PV (cm):Number of tracks / 0.02 cm: :log
 ##iperr2dToPV:Track 2D IP error wrt PV (cm):Number of tracks:log
 ##iperr2dToPV2validpixelhits:Track 2D IP error wrt PV (cm) (nPixelValidHits>=2):Number of tracks:log
@@ -20,7 +21,7 @@ ip2dToBS:Track 2D IP wrt BS (cm):Number of tracks: :log
 ##ip2dToBS2validpixelhits:Track 2D IP wrt BS (cm) (nPixelValidHits>=2):Number of tracks: :log
 ##iperr2dToBS:Track 2D IP error wrt BS (cm):Number of tracks:log
 ##iperr2dToBS2validpixelhits:Track 2D IP error wrt BS (cm) (nPixelValidHits>=2):Number of tracks:log
-sip2dToPV:SIP in 2D wrt PV:Number of tracks: :log: : :10
+sip2dToPV:Track 2D SIP wrt PV:Number of tracks / 0.5: :log:-5:5:5
 ##sip2dToPV2validpixelhits:SIP in 2D wrt PV (nPixelValidHits>=2):Number of tracks: :log
 ip3dToPV:Track 3D IP wrt PV (cm):Number of tracks: :log
 ##ip3dToPV2validpixelhits:Track 3D IP wrt PV (cm) (nPixelValidHits>=2):Number of tracks: :log
@@ -140,7 +141,7 @@ stripTECLayerwithMeasurement:Number of hitted Strip TEC layers:Numberof tracks
 ##### Track Properties #####
 ############################
 trackCharge:Charge:Number of tracks
-trackChi2bynDOF:Track #chi^{2}/ndf:Number of tracks / 0.1: :log:0:5:2
+trackChi2bynDOF:Track #chi^{2}/ndf:Number of tracks / 0.2: :log:0:5:2
 trackChi2:#chi^{2}:Number of tracks
 trackChi2Prob:Track #chi^{2} probability:Number of tracks / 0.02: :log
 trackChi2oNDF:#chi^{2}/ndf (x-axis upto 100):Number of tracks
@@ -148,13 +149,13 @@ trackChi2oNDF:#chi^{2}/ndf (x-axis upto 100):Number of tracks
 trackEta:Track #eta:Number of tracks / 0.1
 trackEtaerr:Error in #eta:Number of tracks
 trackP:Track p:Number of tracks
-trackPhi:Track #phi:Number of tracks / 0.1
+trackPhi:Track #phi:Number of tracks / 0.02#pi
 trackPhierr:Error in #phi:Number of tracks
-trackPt:Track p_{T} (GeV):Number of tracks (log): :log
-trackPt_Zoom:Track pt:Number of tracks (log): :log
-trackPterr:Error in track pt:Number of tracks (log): :log
-##trackThetaerr:Error in track cos(#theta):Numberof tracks
-trackqOverp:q over p:Numberof tracks
+trackPt:Track p_{T} (GeV):Number of tracks / 2 GeV: :log: : :2
+trackPt_Zoom:Track pt:Number of tracks: :log
+trackPterr:Error in track pt:Number of tracks: :log
+##trackThetaerr:Error in track cos(#theta):Number of tracks
+trackqOverp:q over p:Number of tracks
 trackqOverperr:Error in q over p:Number of tracks
 trackalgo:Track algo:Number of tracks
 trackorigalgo:Track original algo:Number of tracks
@@ -165,6 +166,14 @@ trackorigalgo:Track original algo:Number of tracks
 vertexXpos:X position of vertex:Number of tracks
 vertexYpos:Y position of vertex:Number of tracks
 vertexZpos:Z position of vertex (cm):Number of tracks
+nGoodVtx:Number of vertices:Events
+vertexXYposBS:Vertex dxy to BS (cm):Number of vertices: :log:0.0:0.075
+vertexXYposerrBS:Error on vertex dxy to BS:Number of vertices: :log
+vertexZposBS:Z position of vertex relative to BS (cm):Number of vertices
+vertexZposerrBS:Error on vertex dxy to BS:Number of vertices
+vertexChi2oNDF:Vertex #chi^{2}/ndf:Number of vertices
+vertexChi2Prob:Vertex #chi^{2} probability:Number of vertices
+vertexSelXYposBS:Vertex dxy to BS (cm):Number of vertices: :log:0.0:0.05
 ##
 ##### Jets #####
 ################

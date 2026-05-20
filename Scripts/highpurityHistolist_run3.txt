@@ -1,7 +1,7 @@
 ############
 ## Legend ##
 ############
-## h_name : x_title : y_title : x_type : y_type : x_low : x_high : x_rebin
+## h_name : x_title : y_title : x_type : y_type : x_low : x_high : x_rebin : rrange
 ############
 ##
 ##### DCA & SIP #####
@@ -15,13 +15,13 @@ ip2dToBS:Track 2D IP wrt BS (cm):Number of tracks: :log
 ##ip2dToBS2validpixelhits:Track 2D IP wrt BS (cm) (nPixelValidHits>=2):Number of tracks: :log
 ##iperr2dToBS:Track 2D IP error wrt BS (cm):Number of tracks:log
 ##iperr2dToBS2validpixelhits:Track 2D IP error wrt BS (cm) (nPixelValidHits>=2):Number of tracks:log
-sip2dToPV:SIP in 2D wrt PV:Number of tracks: :log: : :10
+sip2dToPV:Track 2D SIP wrt PV:Number of tracks / 0.5: :log:-5:5:5
 ##sip2dToPV2validpixelhits:SIP in 2D wrt PV (nPixelValidHits>=2):Number of tracks: :log
 ip3dToPV:Track 3D IP wrt PV (cm):Number of tracks: :log
 ##ip3dToPV2validpixelhits:Track 3D IP wrt PV (cm) (nPixelValidHits>=2):Number of tracks: :log
 iperr3dToPV:Track 3D IP error wrt PV (cm):Number of tracks:log:log:0:1:1
 ##iperr3dToPV2validpixelhits:Track 3D IP error wrt PV (cm) (nPixelValidHits>=2):Number of tracks:log:log
-sip3dToPV:Track 3D SIP wrt PV:Number of tracks: :log:-5:5:5
+sip3dToPV:Track 3D SIP wrt PV:Number of tracks / 0.5: :log:-5:5:5
 ##sip3dToPV2validpixelhits:Track 3D SIP wrt PV (nPixelValidHits>=2):Number of tracks: :log
 sipDxyToPV:SIP in xy plane wrt PV:Number of tracks / 0.2: :log
 sipDzToPV:SIP in z-axis wrt PV:Number of tracks / 0.2: :log
@@ -49,7 +49,7 @@ sip3dToBS:Track 3D SIP wrt BS:Number of tracks: :log
 #########################################
 beamSpotXYpos:Track dxy wrt beamspot (cm):Number of tracks / 0.2 cm
 beamSpotXYposerr:Tout-court error (cm):Number of tracks / 0.2 cm
-beamSpotZpos:Track dz to beamspot (cm):Number of tracks / 0.4 cm
+beamSpotZpos:Track dz to beamspot (cm):Numberof tracks / 0.4 cm
 beamSpotZposerr:Track dz error to beamspot (cm):Number of tracks / 0.1 cm
 ##
 ##### Cluster Properties #####
@@ -94,9 +94,9 @@ nVertex:Number of vertices:Number of events
 ##
 ##### Number of Lost Hits #####
 ###############################
-nLostHitByLayer:Layer with lost hits: : :log
-nLostHitByLayerPix:Pixel layer with lost hits: : :log
-nLostHitByLayerStrip:Strip layer with lost hits: : :log
+nLostHitByLayer:Layer with lost hits:Number of hits: :log
+nLostHitByLayerPix:Pixel layer with lost hits:Number of hits: :log
+nLostHitByLayerStrip:Strip layer with lost hits:Number of hits: :log
 nlostHits:Number of lost hits:Number of Tracks: :log
 nlostPixelBarrelHits:Number of lost hits in Pixel Barrel:Number of Tracks: :log
 nlostPixelEndcapHits:Number of lost hits in Pixel Endcap:Number of Tracks: :log
@@ -111,11 +111,11 @@ nlostTrackerhits:Number of lost hits in Tracker:Number of Tracks / 1: :log
 ##### Number of Valid Hits #####
 ################################
 nvalidPixelHits:Number of valid hits in pixel:Number of tracks
-nvalidPixelBarrelHits:Number of valid hits in Pixel Barrel:Number of tracks / 1
+nvalidPixelBarrelHits:Number of valid hits in Pixel Barrel:Number of tracks
 nvalidPixelEndcapHits:Number of  valid hits in Pixel Endcap:Number of tracks:lin
 nvalidStripHits:Number of valid hits in strip:Number of tracks
 nvalidTIBHits:Number of valid hits in TIB:Number of tracks
-nvalidTOBHits:Number of valid hits in TOB:Number of tracks / 1
+nvalidTOBHits:Number of valid hits in TOB:Number of tracks
 nvalidTIDHits:Number of valid hits in TID:Number of tracks
 nvalidTECHits:Number of validhits in TEC:Number of tracks
 nvalidTrackerhits:Number of valid Tracker hits per track:Number of tracks
@@ -135,21 +135,21 @@ stripTECLayerwithMeasurement:Number of hitted Strip TEC layers:Numberof tracks
 ##### Track Properties #####
 ############################
 trackCharge:Charge:Number of tracks
-trackChi2bynDOF:Track #chi^{2}/ndf:Number of tracks / 0.1: :log:0:5:2
+trackChi2bynDOF:Track #chi^{2}/ndf:Number of tracks / 0.2: :log:0:5:2
 trackChi2:#chi^{2}:Number of tracks
-trackChi2Prob:Track #chi^{2} probability:Number of tracks / 0.02: :log
+trackChi2Prob:Track #chi^{2} probability:Number of tracks: :log
 trackChi2oNDF:#chi^{2}/ndf (x-axis upto 100):Number of tracks
 ##trackCosTheta:Track cos(#theta):Number of tracks
 trackEta:Track #eta:Number of tracks / 0.1
 trackEtaerr:Error in #eta:Number of tracks
 trackP:Track p:Number of tracks
-trackPhi:Track #phi:Number of tracks / 0.1
+trackPhi:Track #phi:Number of tracks / 0.02#pi
 trackPhierr:Error in #phi:Number of tracks
-trackPt:Track p_{T} (GeV):Number of tracks (log): :log
-trackPt_Zoom:Track pt:Number of tracks (log): :log
-trackPterr:Error in track pt:Number of tracks (log): :log
+trackPt:Track p_{T} (GeV):Number of tracks / GeV: :log
+trackPt_Zoom:Track pt:Number of tracks: :log
+trackPterr:Error in track pt:Number of tracks: :log
 ##trackThetaerr:Error in track cos(#theta):Numberof tracks
-trackqOverp:q over p:Numberof tracks
+trackqOverp:q over p:Number of tracks
 trackqOverperr:Error in q over p:Number of tracks
 trackalgo:Track algo:Number of tracks
 trackorigalgo:Track original algo:Number of tracks
@@ -161,7 +161,7 @@ vertexXpos:X position of vertex:Number of tracks
 vertexYpos:Y position of vertex:Number of tracks
 vertexZpos:Z position of vertex (cm):Number of tracks
 nGoodVtx:Number of vertices:Events
-vertexXYposBS:Vertex dxy to BS (cm):Number of vertices: :log
+vertexXYposBS:Vertex dxy to BS (cm):Number of vertices / 0.005 cm: :log:0.0:0.075:2
 vertexXYposerrBS:Error on vertex dxy to BS:Number of vertices: :log
 vertexZposBS:Z position of vertex relative to BS (cm):Number of vertices
 vertexZposerrBS:Error on vertex dxy to BS:Number of vertices
